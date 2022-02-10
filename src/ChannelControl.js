@@ -1,21 +1,42 @@
 import * as Tone from "tone"
 //import sound from "./Arpege.mp3";
-import {useState, useEffect} from "react";
+import {useState, useEffect, useRef} from "react";
+import {Paper, Slider, Checkbox} from "@mui/material";
 
 
 // see example: https://github.com/Tonejs/Tone.js/blob/dev/examples/mixer.html
 
+// make tone.js elements live outside of react component
+
+
+
 const ChannelControl = ({name, soundFile, stopped}) => { // props: name, source, isMuted, isSolo
 
-    const [channel, setChannel] = useState(null);
+
+
     const [player, setPlayer] = useState(null);
+    const [channel, setChannel] = useState(null);
+    //const [soloed, setSoloed] = useState(false);
+    //const [muted, setMuted] = useState(false)
+
 
     useEffect(() => {
+            console.log("Create player for: ", soundFile);
 
-        if (channel === null ) {
-            console.log("first start");
-            makeChannel(soundFile);
-        }
+            if (player===null) {
+
+                const source = process.env.PUBLIC_URL + "/sounds/" + soundFile;
+                const channel = new Tone.Channel(0, -0.5).toDestination();
+                const player = new Tone.Player({
+                    url: source,
+                    loop: true,
+                    onload: () => console.log("Local onload -  loaded", name, soundFile)
+                }).sync().start(0);
+                player.connect(channel);
+
+                setChannel(channel);
+                setPlayer(player);
+            }
     }, []);
 
     // real stopping does not work though....
@@ -32,80 +53,54 @@ const ChannelControl = ({name, soundFile, stopped}) => { // props: name, source,
         [stopped]
     );
 
-    function makeChannel(soundFile) {
-
-        const channel = new Tone.Channel(-3, -0.6).toDestination();
-
-
-        // const player = new Tone.Player(sound);
-        // player.connect(channel);
-        // Tone.loaded().then(() => {
-        //   player.sync();
-        //   console.log("Ready for playback");
-        //   player.start(0);
-        // });
-        const source = process.env.PUBLIC_URL+"/sounds/" + soundFile;
-
-        const player = new Tone.Player({
-            url: source,
-            loop: true,
-            onload: () => console.log("Local onload -  loaded", name, soundFile)
-        }).sync().start(0);
-        player.connect(channel);
-        // Tone.loaded().then(() => {
-        //       //player.sync();
-        //       console.log("Ready for playback");
-        //       //player.start(0);
-        // });
-
-        setChannel(channel);
-        setPlayer(player);
-
-    }
-
-
     const setVolume = (event) => {
         const volume = event.target.value;
         console.log(volume);
-        channel.set({volume: volume });
+        if (channel) {
+            if (!channel.muted) channel.set({volume: volume }); // otherwise changing the channel volume will open the channel in muted state
+        }
+        //TODO: we need state variable to carry volume probably later also prop to control it from outside...
     }
 
     const setPan = (event) => {
         const pan = event.target.value;
         console.log(pan);
-        channel.set({pan: pan });
+        if (channel) channel.set({pan: pan });
     }
 
-    const setMuted = (event) => {
+    const handleMuted = (event) => {
         const mute = event.target.checked;
         console.log(mute);
-        channel.set({mute: mute });
+        if (channel) channel.set({mute: mute });
+        //TODO: kui muuta slaiderit mute ajal, siis peaks mutist lahti võtmine panema channel.volume slaideri väärtuse peale
+        //setMuted(mute);
     }
 
-    const setSolo = (event) => {
+    const handleSolo = (event) => {
         const solo = event.target.checked;
         console.log(solo);
-        channel.set({solo: solo });
+        if (channel) channel.set({solo: solo });
+        //setSoloed(solo);
     }
 
 
     return (
-        <>
+        <div>
             <div>
-                Channel: {name}
+                {name}
             </div>
             <div>
-                Volume: <input  min={-70} max={12} type={"range"} onInput={setVolume} />
+                Volume: <Slider  orientation={"vertical"} sx={{height: 60 }}  defaultValue={0}  min={-40} max={12} onChange={setVolume} />
             </div>
             <div>
-                Pan: <input  min={-1} max={1} step={0.05} type={"range"} onInput={setPan} />
+                Pan: <Slider sx={{width:40}}  min={-1} max={1} step={0.05} type={"range"} onInput={setPan} />
             </div>
             <div>
-                Mute: <input type={"checkbox"} onInput={ setMuted } />
-                Solo: <input type={"checkbox"} onInput={ setSolo } />
+                Mute: <Checkbox onChange={ handleMuted } />
+                Solo: <Checkbox onChange={ handleSolo } />
             </div>
 
-        </>
+        </div>
     );
 }
 
