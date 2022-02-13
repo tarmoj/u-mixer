@@ -3,6 +3,9 @@ import * as Tone from "tone"
 //import sound from "./60.ogg"
 import {useState} from "react";
 import ChannelControl from "./ChannelControl";
+import {Paper, ThemeProvider} from "@mui/material";
+import { createTheme } from '@mui/material/styles';
+
 
 
 function App() {
@@ -20,14 +23,21 @@ function App() {
         Tone.Transport.stop(0);
     }
 
+    const darkTheme = createTheme({
+        palette: {
+            mode: 'dark',
+        },
+    });
+
+
 
   return (
-    <div className="App">
-      <header className="App-header">
+    <ThemeProvider theme={darkTheme}>
+    <Paper className={"App"}>
         <p>
-          U: mixer test test
+          U: mixer test
         </p>
-        <div>
+        <div className={"center"}>
             <table>
                 <tbody>
                 <tr>
@@ -50,9 +60,8 @@ function App() {
 
         </div>
 
-      </header>
-
-    </div>
+    </Paper>
+    </ThemeProvider>
   );
 }
 

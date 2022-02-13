@@ -1,7 +1,7 @@
 import * as Tone from "tone"
 //import sound from "./Arpege.mp3";
 import {useState, useEffect, useRef} from "react";
-import {Paper, Slider, Checkbox} from "@mui/material";
+
 
 
 // see example: https://github.com/Tonejs/Tone.js/blob/dev/examples/mixer.html
