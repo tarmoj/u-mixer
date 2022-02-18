@@ -1,6 +1,7 @@
 import * as Tone from "tone"
 //import sound from "./Arpege.mp3";
 import {useState, useEffect, useRef} from "react";
+import {Paper, Slider, ToggleButton} from "@mui/material";
 
 
 
@@ -16,8 +17,9 @@ const ChannelControl = ({name, soundFile, stopped}) => { // props: name, source,
 
     const [player, setPlayer] = useState(null);
     const [channel, setChannel] = useState(null);
-    //const [soloed, setSoloed] = useState(false);
-    //const [muted, setMuted] = useState(false)
+    const [soloed, setSoloed] = useState(false);
+    const [muted, setMuted] = useState(false);
+    const [loaded, setLoaded] = useState(false);
 
 
     useEffect(() => {
@@ -30,7 +32,10 @@ const ChannelControl = ({name, soundFile, stopped}) => { // props: name, source,
                 const player = new Tone.Player({
                     url: source,
                     loop: true,
-                    onload: () => console.log("Local onload -  loaded", name, soundFile)
+                    onload: () => {
+                        console.log("Local onload -  loaded", name, soundFile);
+                        setLoaded(true);
+                    }
                 }).sync().start(0);
                 player.connect(channel);
 
@@ -57,50 +62,50 @@ const ChannelControl = ({name, soundFile, stopped}) => { // props: name, source,
         const volume = event.target.value;
         console.log(volume);
         if (channel) {
-            if (!channel.muted) channel.set({volume: volume }); // otherwise changing the channel volume will open the channel in muted state
+            if (!channel.muted) channel.volume.rampTo(volume, 0.05); // otherwise changing the channel volume will open the channel in muted state
         }
-        //TODO: we need state variable to carry volume probably later also prop to control it from outside...
     }
 
     const setPan = (event) => {
         const pan = event.target.value;
         console.log(pan);
-        if (channel) channel.set({pan: pan });
+        if (channel) channel.pan.rampTo(pan, 0.05);
     }
 
     const handleMuted = (event) => {
-        const mute = event.target.checked;
+        //const mute = event.target.checked;
+        const mute = !muted; // with toggle button there is no ecent, I guess
         console.log(mute);
         if (channel) channel.set({mute: mute });
-        //TODO: kui muuta slaiderit mute ajal, siis peaks mutist lahti võtmine panema channel.volume slaideri väärtuse peale
-        //setMuted(mute);
+        setMuted(mute);
     }
 
     const handleSolo = (event) => {
-        const solo = event.target.checked;
+        //const solo = event.target.checked;
+        const solo = !soloed;
         console.log(solo);
         if (channel) channel.set({solo: solo });
-        //setSoloed(solo);
+        setSoloed(solo);
     }
 
 
     return (
-        <div>
+        <Paper elevation={2}>
             <div>
-                {name}
+                { loaded ? name : "Loading"}
+            </div>
+            <div className={"center"}>
+                <Slider  orientation={"vertical"} sx={{height: 70 }}   defaultValue={0}  min={-36} max={12} onChange={setVolume} />
             </div>
             <div>
-                Volume: <Slider  orientation={"vertical"} sx={{height: 60 }}  defaultValue={0}  min={-40} max={12} onChange={setVolume} />
+                L <Slider sx={{width:40}} min={-1} max={1} step={0.05} defaultValue={0} onChange={setPan} /> R
             </div>
             <div>
-                Pan: <Slider sx={{width:40}}  min={-1} max={1} step={0.05} type={"range"} onInput={setPan} />
-            </div>
-            <div>
-                Mute: <Checkbox onChange={ handleMuted } />
-                Solo: <Checkbox onChange={ handleSolo } />
+                <ToggleButton aria-label="Mute"  value="mute" onChange={ handleMuted }  selected={muted} color={"secondary"}>M</ToggleButton>
+                <ToggleButton aria-label="Solo" value="solo" onChange={ handleSolo } selected={soloed} color={"primary"}>S</ToggleButton>
             </div>
 
-        </div>
+        </Paper>
     );
 }
 
