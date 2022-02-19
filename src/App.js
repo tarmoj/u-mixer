@@ -10,8 +10,9 @@ import { createTheme } from '@mui/material/styles';
 
 function App() {
 
-  const [stopped, setStopped] = useState(true);
+  const [transportCommand, setTransportCommand] = useState("");
   const [time, setTime] = useState(0);
+  //const [events, setEvents] =useState([]); // event: {property: "pan|volume", value:value, rampTime: xxx}
 
   let timeFunction;
 
@@ -19,7 +20,8 @@ function App() {
         //setStopped(false);
         console.log("Start");
         //Tone.Transport.seek(0); // seek does not exist
-        Tone.Transport.start(0);
+        setTransportCommand("start");
+        //Tone.Transport.start(0); // is this necessary
         //Tone.Transport.seconds = 0; // this seems to stop the players.
         Tone.Transport.scheduleRepeat((time) => {
             setTime(Math.floor(Tone.Transport.seconds));
@@ -28,10 +30,10 @@ function App() {
 
     const stop = () => {
         //setStopped(true);
-
+        setTransportCommand("stop");
         console.log("Stop");
         //Tone.Transport.seconds = 0;
-        Tone.Transport.stop(+0.1);
+        //Tone.Transport.stop(+0.1);
     }
 
     const darkTheme = createTheme({
@@ -69,6 +71,7 @@ function App() {
 
       ];
 
+  // command = start | stop | pause
 
 
   return (
@@ -81,7 +84,7 @@ function App() {
             <table>
                 <tbody>
                 <tr>
-                    { tracks.map( (track, index) => <td key={index}><ChannelControl name={track.name} soundFile={track.soundFile}/></td>  )}
+                    { tracks.map( (track, index) => <td key={index}><ChannelControl name={track.name} soundFile={track.soundFile} command={transportCommand}/></td>  )}
                 </tr>
                 </tbody>
             </table>

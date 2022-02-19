@@ -11,7 +11,7 @@ import {Paper, Slider, ToggleButton} from "@mui/material";
 
 
 
-const ChannelControl = ({name, soundFile, stopped}) => { // props: name, source, isMuted, isSolo
+const ChannelControl = ({name, soundFile, command}) => { // props: name, source, isMuted, isSolo
 
 
 
@@ -36,7 +36,7 @@ const ChannelControl = ({name, soundFile, stopped}) => { // props: name, source,
                         console.log("Local onload -  loaded", name, soundFile);
                         setLoaded(true);
                     }
-                }).sync().start(0);
+                }).sync(); //.start(0);
                 player.connect(channel);
 
                 setChannel(channel);
@@ -44,18 +44,27 @@ const ChannelControl = ({name, soundFile, stopped}) => { // props: name, source,
             }
     }, []);
 
+
     // real stopping does not work though....
     useEffect(
         () => {
-            console.log("Stopped:", stopped);
-            // if (player) {
-            //     if (stopped)
-            //         player.stop();
-            //     else
-            //         player.start();
-            // }
+            console.log("command:", command);
+            if (player) {
+                if (command==="start") {
+                    player.start(0);
+                    if (Tone.Transport.state !== "started") {
+                        Tone.Transport.start(0);
+                    }
+                }
+                else if (command==="stop") {
+                    player.stop(0);
+                    if (Tone.Transport.state !== "stopped") {
+                        Tone.Transport.stop(0);
+                    }
+                }
+            }
         },
-        [stopped]
+        [command]
     );
 
     const setVolume = (event) => {
