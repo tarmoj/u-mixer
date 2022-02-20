@@ -16,13 +16,10 @@ function App() {
 
 
     const start = () => {
-        //setStopped(false);
         console.log("Start");
-        //Tone.Transport.seek(0); // seek does not exist
-        //setTransportCommand("start");
-        Tone.Transport.seconds = 0; // has no influence though...
-        Tone.Transport.start(0.1); // is this necessary
-        //Tone.Transport.seconds = 0; // this seems to stop the players.
+        Tone.Transport.stop(+0.01); // strange tryout kind of works
+        Tone.Transport.start(+0.1); // is this necessary
+        //Tone.Transport.seconds = 0; // experiment with this
         Tone.Transport.scheduleRepeat((time) => {
             setTime(Math.floor(Tone.Transport.seconds));
         }, 1);
@@ -32,8 +29,9 @@ function App() {
         //setStopped(true);
         //setTransportCommand("stop");
         console.log("Stop");
-        Tone.Transport.seconds = 0;
+        //Tone.Transport.seconds = 0; // has now effect...
         Tone.Transport.stop(+0.1);
+        //setTimeout( () => {Tone.Transport.seconds = 0; setTime(0);}, 200); // does not work
     }
 
     const darkTheme = createTheme({
@@ -75,12 +73,26 @@ function App() {
 
   // test setEvent
     Tone.Transport.scheduleOnce( ()=>{
-        const testEvent = {property:"volume", value: -24, rampTo: 1};
+        const testEvent = {property:"solo", value: true};
         const tempEvents = activeEvents.slice();
         tempEvents[0] = testEvent;
         setActiveEvents(tempEvents);
-        //Tone.Transport.seconds = 5; // just try if jumping works...
     }, 10 );
+
+    // something strange happens here... and gets into loop....
+    Tone.Transport.scheduleOnce( ()=>{
+        const testEvent = {property:"mute", value: true};
+        const tempEvents = activeEvents.slice();
+        tempEvents[0] = testEvent;
+        setActiveEvents(tempEvents);
+    }, 12 );
+    //
+    // Tone.Transport.scheduleOnce( ()=>{
+    //     const testEvent = {property:"solo", value: true};
+    //     const tempEvents = activeEvents.slice();
+    //     tempEvents[1] = testEvent;
+    //     setActiveEvents(tempEvents);
+    // }, 14 );
 
 
     return (

@@ -21,6 +21,7 @@ const ChannelControl = ({name, soundFile, event}) => { // props: name, source,  
     const [muted, setMuted] = useState(false);
     const [loaded, setLoaded] = useState(false);
     const [volume, setVolume] = useState(0);
+    const [pan, setPan] = useState(0);
 
 
     useEffect(() => {
@@ -50,6 +51,13 @@ const ChannelControl = ({name, soundFile, event}) => { // props: name, source,  
             console.log("Received event: ", event );
             if (event.property==="volume") {
                 handleVolume(event.value, event.rampTime);
+            } else if (event.property==="pan") {
+                handlePan(event.value, event.rampTime);
+            }  else if (event.property==="solo") {
+                handleSolo(event.value); // not sure if it works this way or on the contrary...
+            }
+            else if (event.property==="mute") {
+                handleMuted(event.value); // not sure if it works this way or on the contrary...
             }
         }, [event]
 
@@ -100,24 +108,17 @@ const ChannelControl = ({name, soundFile, event}) => { // props: name, source,  
 
     }
 
-    const handlePan = (event) => {
-        const pan = event.target.value;
-        console.log(pan);
-        if (channel) channel.pan.rampTo(pan, 0.05);
+    const handlePan = (pan, rampTime=0.05) => {
+        if (channel) channel.pan.rampTo(pan, rampTime);
+        setPan(pan);
     }
 
-    const handleMuted = () => {
-        //const mute = event.target.checked;
-        const mute = !muted; // with toggle button there is no ecent, I guess
-        console.log(mute);
+    const handleMuted = (mute) => {
         if (channel) channel.set({mute: mute });
         setMuted(mute);
     }
 
-    const handleSolo = () => {
-        //const solo = event.target.checked;
-        const solo = !soloed;
-        console.log(solo);
+    const handleSolo = (solo) => {
         if (channel) channel.set({solo: solo });
         setSoloed(solo);
     }
@@ -132,11 +133,11 @@ const ChannelControl = ({name, soundFile, event}) => { // props: name, source,  
                 <Slider  orientation={"vertical"} sx={{height: 70 }}   value={volume} min={-36} max={12} onChange={(e) => handleVolume(e.target.value)} />
             </div>
             <div>
-                L <Slider sx={{width:40}} min={-1} max={1} step={0.05} defaultValue={0} onChange={handlePan} /> R
+                L <Slider sx={{width:40}} min={-1} max={1} step={0.05} value={pan} onChange={(e) => handlePan(e.target.value)} /> R
             </div>
             <div>
-                <ToggleButton aria-label="Mute"  value="mute" onChange={ handleMuted }  selected={muted} color={"secondary"}>M</ToggleButton>
-                <ToggleButton aria-label="Solo" value="solo" onChange={ handleSolo } selected={soloed} color={"primary"}>S</ToggleButton>
+                <ToggleButton aria-label="Mute"  value="mute" onChange={ () => handleMuted(!muted) }  selected={muted} color={"secondary"}>M</ToggleButton>
+                <ToggleButton aria-label="Solo" value="solo" onChange={ () => handleSolo(!soloed) } selected={soloed} color={"primary"}>S</ToggleButton>
             </div>
 
         </Paper>
