@@ -11,7 +11,7 @@ import {Paper, Slider, ToggleButton} from "@mui/material";
 
 
 
-const ChannelControl = ({name, soundFile, command}) => { // props: name, source, isMuted, isSolo
+const ChannelControl = ({name, soundFile, event}) => { // props: name, source,  event: {property, value, rampTime}
 
 
 
@@ -20,6 +20,7 @@ const ChannelControl = ({name, soundFile, command}) => { // props: name, source,
     const [soloed, setSoloed] = useState(false);
     const [muted, setMuted] = useState(false);
     const [loaded, setLoaded] = useState(false);
+    const [volume, setVolume] = useState(0);
 
 
     useEffect(() => {
@@ -36,7 +37,7 @@ const ChannelControl = ({name, soundFile, command}) => { // props: name, source,
                         console.log("Local onload -  loaded", name, soundFile);
                         setLoaded(true);
                     }
-                }).sync(); //.start(0);
+                }).sync().start(0);
                 player.connect(channel);
 
                 setChannel(channel);
@@ -44,44 +45,68 @@ const ChannelControl = ({name, soundFile, command}) => { // props: name, source,
             }
     }, []);
 
-
-    // real stopping does not work though....
-    useEffect(
-        () => {
-            console.log("command:", command);
-            if (player) {
-                if (command==="start") {
-                    player.start(0);
-                    if (Tone.Transport.state !== "started") {
-                        Tone.Transport.start(0);
-                    }
-                }
-                else if (command==="stop") {
-                    player.stop(0);
-                    if (Tone.Transport.state !== "stopped") {
-                        Tone.Transport.stop(0);
-                    }
-                }
+    useEffect( () => {
+            if (!event) return;
+            console.log("Received event: ", event );
+            if (event.property==="volume") {
+                handleVolume(event.value, event.rampTime);
             }
-        },
-        [command]
+        }, [event]
+
     );
 
-    const setVolume = (event) => {
-        const volume = event.target.value;
-        console.log(volume);
+    /*Tone.Transport.on("start",  ()=> {
+        if (!player) return;
+        console.log("player status: ", player.state);
+        if (player.state !== "started") player.start(0)
+    } );
+    Tone.Transport.on("stop",  ()=> {
+        if (!player) return;
+        if (player.state !== "stopped") player.stop(0)
+    } );*/
+
+
+
+    // real stopping does not work though....
+    // useEffect(
+    //     () => {
+    //         console.log("command:", command);
+    //         if (player) {
+    //             if (command==="start") {
+    //                 player.start(0);
+    //                 if (Tone.Transport.state !== "started") {
+    //                     Tone.Transport.start(0);
+    //                 }
+    //             }
+    //             else if (command==="stop") {
+    //                 player.stop(0);
+    //                 if (Tone.Transport.state !== "stopped") {
+    //                     Tone.Transport.stop(0);
+    //                 }
+    //             }
+    //         }
+    //     },
+    //     [command]
+    // );
+
+    const handleVolume = (volume, rampTime=0.05) => {
+        console.log("ChannelControl::handleVolume", volume)
         if (channel) {
-            if (!channel.muted) channel.volume.rampTo(volume, 0.05); // otherwise changing the channel volume will open the channel in muted state
+            if (!channel.muted) channel.volume.rampTo(volume, rampTime); // otherwise changing the channel volume will open the channel in muted state
+            setVolume(volume);
+        } else {
+            console.log("channel is null");
         }
+
     }
 
-    const setPan = (event) => {
+    const handlePan = (event) => {
         const pan = event.target.value;
         console.log(pan);
         if (channel) channel.pan.rampTo(pan, 0.05);
     }
 
-    const handleMuted = (event) => {
+    const handleMuted = () => {
         //const mute = event.target.checked;
         const mute = !muted; // with toggle button there is no ecent, I guess
         console.log(mute);
@@ -89,7 +114,7 @@ const ChannelControl = ({name, soundFile, command}) => { // props: name, source,
         setMuted(mute);
     }
 
-    const handleSolo = (event) => {
+    const handleSolo = () => {
         //const solo = event.target.checked;
         const solo = !soloed;
         console.log(solo);
@@ -104,10 +129,10 @@ const ChannelControl = ({name, soundFile, command}) => { // props: name, source,
                 { loaded ? name : "Loading"}
             </div>
             <div className={"center"}>
-                <Slider  orientation={"vertical"} sx={{height: 70 }}   defaultValue={0}  min={-36} max={12} onChange={setVolume} />
+                <Slider  orientation={"vertical"} sx={{height: 70 }}   value={volume} min={-36} max={12} onChange={(e) => handleVolume(e.target.value)} />
             </div>
             <div>
-                L <Slider sx={{width:40}} min={-1} max={1} step={0.05} defaultValue={0} onChange={setPan} /> R
+                L <Slider sx={{width:40}} min={-1} max={1} step={0.05} defaultValue={0} onChange={handlePan} /> R
             </div>
             <div>
                 <ToggleButton aria-label="Mute"  value="mute" onChange={ handleMuted }  selected={muted} color={"secondary"}>M</ToggleButton>

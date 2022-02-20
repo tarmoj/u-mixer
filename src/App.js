@@ -12,16 +12,16 @@ function App() {
 
   const [transportCommand, setTransportCommand] = useState("");
   const [time, setTime] = useState(0);
-  //const [events, setEvents] =useState([]); // event: {property: "pan|volume", value:value, rampTime: xxx}
+  const [activeEvents, setActiveEvents] =useState([]); // event: {property: "pan|volume", value:value, rampTime: xxx}
 
-  let timeFunction;
 
     const start = () => {
         //setStopped(false);
         console.log("Start");
         //Tone.Transport.seek(0); // seek does not exist
-        setTransportCommand("start");
-        //Tone.Transport.start(0); // is this necessary
+        //setTransportCommand("start");
+        Tone.Transport.seconds = 0; // has no influence though...
+        Tone.Transport.start(0.1); // is this necessary
         //Tone.Transport.seconds = 0; // this seems to stop the players.
         Tone.Transport.scheduleRepeat((time) => {
             setTime(Math.floor(Tone.Transport.seconds));
@@ -30,10 +30,10 @@ function App() {
 
     const stop = () => {
         //setStopped(true);
-        setTransportCommand("stop");
+        //setTransportCommand("stop");
         console.log("Stop");
-        //Tone.Transport.seconds = 0;
-        //Tone.Transport.stop(+0.1);
+        Tone.Transport.seconds = 0;
+        Tone.Transport.stop(+0.1);
     }
 
     const darkTheme = createTheme({
@@ -73,8 +73,17 @@ function App() {
 
   // command = start | stop | pause
 
+  // test setEvent
+    Tone.Transport.scheduleOnce( ()=>{
+        const testEvent = {property:"volume", value: -24, rampTo: 1};
+        const tempEvents = activeEvents.slice();
+        tempEvents[0] = testEvent;
+        setActiveEvents(tempEvents);
+        //Tone.Transport.seconds = 5; // just try if jumping works...
+    }, 10 );
 
-  return (
+
+    return (
     <ThemeProvider theme={darkTheme}>
     <Paper className={"App"}>
         <h1>
@@ -84,7 +93,7 @@ function App() {
             <table>
                 <tbody>
                 <tr>
-                    { tracks.map( (track, index) => <td key={index}><ChannelControl name={track.name} soundFile={track.soundFile} command={transportCommand}/></td>  )}
+                    { tracks.map( (track, index) => <td key={index}><ChannelControl name={track.name} soundFile={track.soundFile} event={activeEvents[index]}/></td>  )}
                 </tr>
                 </tbody>
             </table>
