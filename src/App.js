@@ -1,20 +1,17 @@
 import './App.css';
 import * as Tone from "tone"
-//import sound from "./60.ogg"
 import {useState} from "react";
 import ChannelControl from "./ChannelControl";
-import {Button, IconButton, Paper, ThemeProvider} from "@mui/material";
+import {Button, Paper, ThemeProvider} from "@mui/material";
 import { createTheme } from '@mui/material/styles';
 
 
 
-// TODO: make different components -  MixerArea -> ChannelControls, ConrolArea -> Tone.Transport, progress, time etc
 // TODO: make component ChannelGroup -  master track for 6 channels?
 
-function App() {
+const Control = () => {
 
-  const [time, setTime] = useState(0);
-
+    const [time, setTime] = useState(0);
 
     const start = () => {
         console.log("Start");
@@ -27,11 +24,25 @@ function App() {
     }
 
     const stop = () => {
-
         console.log("Stop");
         Tone.Transport.stop("+0.1");
-        //setTimeout( () => {Tone.Transport.seconds = 0; setTime(0);}, 200); // does not work
+        //setTime(0);
     }
+
+    return (
+        <>
+            <div>
+                <Button aria-label={"Play"} onClick={start} >Play</Button>
+                <Button onClick={stop}>Stop</Button>
+            </div>
+            <div>
+                Time: {time}
+            </div>
+        </>
+    );
+}
+
+function App() {
 
     const darkTheme = createTheme({
         palette: {
@@ -89,15 +100,8 @@ function App() {
 
 
   const getEventList = (trackIndex) => {
-      //const eventArray = [new Array(tracks.length)]; // array of arrays
       const trackEvents = events.filter( (event) => event.channel===tracks[trackIndex].name );
-      /*for (let event of events) {
-          let channelIndex = (typeof(event.channel)==="number") ? event.channel : tracks.findIndex( (track) => track.name===event.channel   ) ;
-          console.log("event for track ", channelIndex);
-          eventArray[channelIndex].push(event);
-      }*/
       console.log("events: ", trackEvents);
-      //setChannelEvents(eventArray);
       return trackEvents;
   };
 
@@ -122,13 +126,7 @@ function App() {
                 </tbody>
             </table>
         </div>
-        <div>
-          <Button aria-label={"Play"} onClick={start} >Play</Button>
-          <Button onClick={stop}>Stop</Button>
-        </div>
-        <div>
-            Time: {time}
-        </div>
+        <Control />
 
     </Paper>
     </ThemeProvider>

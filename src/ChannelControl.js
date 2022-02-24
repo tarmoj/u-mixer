@@ -1,5 +1,4 @@
 import * as Tone from "tone"
-//import sound from "./Arpege.mp3";
 import {useState, useEffect, useRef} from "react";
 import {Paper, Slider, ToggleButton} from "@mui/material";
 
@@ -7,12 +6,8 @@ import {Paper, Slider, ToggleButton} from "@mui/material";
 
 // see example: https://github.com/Tonejs/Tone.js/blob/dev/examples/mixer.html
 
-// make tone.js elements live outside of react component
-
-
 
 const ChannelControl = ({name, soundFile, events}) => { // props: name, source,  event: {property, value, rampTime}
-
 
 
     const [player, setPlayer] = useState(null);
@@ -50,7 +45,7 @@ const ChannelControl = ({name, soundFile, events}) => { // props: name, source, 
             if (!events) return;
             if (events.length===0) return;
             console.log("Events: ", events );
-            //TODO: Tone.Transport.scheduleOnce( ... )
+
             for (let event of events) {
                 console.log(event);
                 Tone.Transport.scheduleOnce( (time)=> {
@@ -64,55 +59,12 @@ const ChannelControl = ({name, soundFile, events}) => { // props: name, source, 
                         handleMuted(event.value); // not sure if it works this way or on the contrary...
                     }
                 }, event.when);
-
             }
-            /*if (event.property==="volume") {
-                handleVolume(event.value, event.rampTime);
-            } else if (event.property==="pan") {
-                handlePan(event.value, event.rampTime);
-            }  else if (event.property==="solo") {
-                handleSolo(event.value); // not sure if it works this way or on the contrary...
-            }
-            else if (event.property==="mute") {
-                handleMuted(event.value); // not sure if it works this way or on the contrary...
-            }*/
-        }, [events]
+        }, [events, channel]
 
     );
 
-    /*Tone.Transport.on("start",  ()=> {
-        if (!player) return;
-        console.log("player status: ", player.state);
-        if (player.state !== "started") player.start(0)
-    } );
-    Tone.Transport.on("stop",  ()=> {
-        if (!player) return;
-        if (player.state !== "stopped") player.stop(0)
-    } );*/
 
-
-
-    // real stopping does not work though....
-    // useEffect(
-    //     () => {
-    //         console.log("command:", command);
-    //         if (player) {
-    //             if (command==="start") {
-    //                 player.start(0);
-    //                 if (Tone.Transport.state !== "started") {
-    //                     Tone.Transport.start(0);
-    //                 }
-    //             }
-    //             else if (command==="stop") {
-    //                 player.stop(0);
-    //                 if (Tone.Transport.state !== "stopped") {
-    //                     Tone.Transport.stop(0);
-    //                 }
-    //             }
-    //         }
-    //     },
-    //     [command]
-    // );
 
     const handleVolume = (volume, rampTime=0.05) => {
         console.log("ChannelControl::handleVolume", volume)
