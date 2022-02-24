@@ -8,11 +8,12 @@ import { createTheme } from '@mui/material/styles';
 
 
 
+// TODO: make different components -  MixerArea -> ChannelControls, ConrolArea -> Tone.Transport, progress, time etc
+// TODO: make component ChannelGroup -  master track for 6 channels?
+
 function App() {
 
-  const [transportCommand, setTransportCommand] = useState("");
   const [time, setTime] = useState(0);
-  const [channelEvents, setChannelEvents] =useState([]); // events sorted by tracks
 
 
     const start = () => {
@@ -26,10 +27,8 @@ function App() {
     }
 
     const stop = () => {
-        //setStopped(true);
-        //setTransportCommand("stop");
+
         console.log("Stop");
-        //Tone.Transport.seconds = 0; // has now effect...
         Tone.Transport.stop("+0.1");
         //setTimeout( () => {Tone.Transport.seconds = 0; setTime(0);}, 200); // does not work
     }
@@ -56,6 +55,10 @@ function App() {
       // {name: "Kruup4", soundFile:"kruup.mp3"},
 
   ];
+
+  const groups = [
+      {firsTrack: 0, lastTrack:5, name: "Group1"}
+  ]
 
 
   const events = [
@@ -98,32 +101,7 @@ function App() {
       return trackEvents;
   };
 
-  // command = start | stop | pause
 
-  // test setEvent
-    /*
-    Tone.Transport.scheduleOnce( ()=>{
-        const testEvent = {property:"solo", value: true};
-        const tempEvents = activeEvents.slice();
-        tempEvents[0] = testEvent;
-        //setActiveEvents(tempEvents);
-    }, 10 );
-
-    // something strange happens here... and gets into loop....
-    Tone.Transport.scheduleOnce( ()=>{
-        const testEvent = {property:"mute", value: true};
-        const tempEvents = activeEvents.slice();
-        tempEvents[0] = testEvent;
-        //setActiveEvents(tempEvents);
-    }, 12 );
-    //
-    // Tone.Transport.scheduleOnce( ()=>{
-    //     const testEvent = {property:"solo", value: true};
-    //     const tempEvents = activeEvents.slice();
-    //     tempEvents[1] = testEvent;
-    //     setActiveEvents(tempEvents);
-    // }, 14 );
-*/
 
     return (
     <ThemeProvider theme={darkTheme}>
