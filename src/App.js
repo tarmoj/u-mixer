@@ -12,13 +12,13 @@ function App() {
 
   const [transportCommand, setTransportCommand] = useState("");
   const [time, setTime] = useState(0);
-  const [activeEvents, setActiveEvents] =useState([]); // event: {property: "pan|volume", value:value, rampTime: xxx}
+  const [channelEvents, setChannelEvents] =useState([]); // events sorted by tracks
 
 
     const start = () => {
         console.log("Start");
-        Tone.Transport.stop(+0.01); // strange tryout kind of works
-        Tone.Transport.start(+0.1); // is this necessary
+        Tone.Transport.stop("+0.01"); // strange tryout kind of works
+        Tone.Transport.start("+0.1"); // is this necessary
         //Tone.Transport.seconds = 0; // experiment with this
         Tone.Transport.scheduleRepeat((time) => {
             setTime(Math.floor(Tone.Transport.seconds));
@@ -30,7 +30,7 @@ function App() {
         //setTransportCommand("stop");
         console.log("Stop");
         //Tone.Transport.seconds = 0; // has now effect...
-        Tone.Transport.stop(+0.1);
+        Tone.Transport.stop("+0.1");
         //setTimeout( () => {Tone.Transport.seconds = 0; setTime(0);}, 200); // does not work
     }
 
@@ -42,8 +42,8 @@ function App() {
 
   const tracks = [ // soundfiles must be ins public/sounds
       {name: "Fl1", soundFile:"fl.mp3"},
-      {name: "Cl2", soundFile:"cl.mp3"},
-      {name: "Kruup", soundFile:"kruup.mp3"},
+      {name: "Cl1", soundFile:"cl.mp3"},
+      {name: "Kruup1", soundFile:"kruup.mp3"},
       {name: "Fl2", soundFile:"fl.mp3"},
       {name: "Cl2", soundFile:"cl.mp3"},
       {name: "Kruup2", soundFile:"kruup.mp3"},
@@ -60,23 +60,53 @@ function App() {
 
   const events = [
 
-      {   channel: "channelName",
-          when: 0 , //time as string perhaps "0:30"?
-          property: "volume|pan|mute|solo",
+      {   channel: "Fl1", // or index in the channel list
+          when: 10 , //time as string perhaps "0:30"?
+          property: "volume", //"volume|pan|mute|solo",
+          value: -24,
+          rampTime: 1, // don't handle ramp for now since it should happen in the child somehow... OR: seprate channels to array declared her and and their visual react
+          executed: false
+      },
+      {   channel: "Fl1", // or index in the channel list
+          when: 12 , //time as string perhaps "0:30"?
+          property: "volume",
           value: 0,
-          rampTime: 1 // don't handle ramp for now since it should happen in the child somehow... OR: seprate channels to array declared her and and their visual react
-      }
+          rampTime: 0.1, // don't handle ramp for now since it should happen in the child somehow... OR: seprate channels to array declared her and and their visual react
+          executed: false
+      },
+      {   channel: "Cl1", // or index in the channel list
+          when: 14 , //time as string perhaps "0:30"?
+          property: "solo",
+          value: true,
+          rampTime: 0.1, // don't handle ramp for now since it should happen in the child somehow... OR: seprate channels to array declared her and and their visual react
+          executed: false
+      },
 
       ];
+
+
+  const getEventList = (trackIndex) => {
+      //const eventArray = [new Array(tracks.length)]; // array of arrays
+      const trackEvents = events.filter( (event) => event.channel===tracks[trackIndex].name );
+      /*for (let event of events) {
+          let channelIndex = (typeof(event.channel)==="number") ? event.channel : tracks.findIndex( (track) => track.name===event.channel   ) ;
+          console.log("event for track ", channelIndex);
+          eventArray[channelIndex].push(event);
+      }*/
+      console.log("events: ", trackEvents);
+      //setChannelEvents(eventArray);
+      return trackEvents;
+  };
 
   // command = start | stop | pause
 
   // test setEvent
+    /*
     Tone.Transport.scheduleOnce( ()=>{
         const testEvent = {property:"solo", value: true};
         const tempEvents = activeEvents.slice();
         tempEvents[0] = testEvent;
-        setActiveEvents(tempEvents);
+        //setActiveEvents(tempEvents);
     }, 10 );
 
     // something strange happens here... and gets into loop....
@@ -84,7 +114,7 @@ function App() {
         const testEvent = {property:"mute", value: true};
         const tempEvents = activeEvents.slice();
         tempEvents[0] = testEvent;
-        setActiveEvents(tempEvents);
+        //setActiveEvents(tempEvents);
     }, 12 );
     //
     // Tone.Transport.scheduleOnce( ()=>{
@@ -93,7 +123,7 @@ function App() {
     //     tempEvents[1] = testEvent;
     //     setActiveEvents(tempEvents);
     // }, 14 );
-
+*/
 
     return (
     <ThemeProvider theme={darkTheme}>
@@ -105,7 +135,11 @@ function App() {
             <table>
                 <tbody>
                 <tr>
-                    { tracks.map( (track, index) => <td key={index}><ChannelControl name={track.name} soundFile={track.soundFile} event={activeEvents[index]}/></td>  )}
+                    { tracks.map( (track, index) =>
+                        <td key={index}>
+                            <ChannelControl name={track.name} soundFile={track.soundFile} events={getEventList(index)}/>
+                        </td>
+                    )}
                 </tr>
                 </tbody>
             </table>

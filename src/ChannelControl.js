@@ -11,7 +11,7 @@ import {Paper, Slider, ToggleButton} from "@mui/material";
 
 
 
-const ChannelControl = ({name, soundFile, event}) => { // props: name, source,  event: {property, value, rampTime}
+const ChannelControl = ({name, soundFile, events}) => { // props: name, source,  event: {property, value, rampTime}
 
 
 
@@ -47,9 +47,26 @@ const ChannelControl = ({name, soundFile, event}) => { // props: name, source,  
     }, []);
 
     useEffect( () => {
-            if (!event) return;
-            console.log("Received event: ", event );
-            if (event.property==="volume") {
+            if (!events) return;
+            if (events.length===0) return;
+            console.log("Events: ", events );
+            //TODO: Tone.Transport.scheduleOnce( ... )
+            for (let event of events) {
+                console.log(event);
+                Tone.Transport.scheduleOnce( (time)=> {
+                    if (event.property === "volume") {
+                        handleVolume(event.value, event.rampTime);
+                    } else if (event.property === "pan") {
+                        handlePan(event.value, event.rampTime);
+                    } else if (event.property === "solo") {
+                        handleSolo(event.value); // not sure if it works this way or on the contrary...
+                    } else if (event.property === "mute") {
+                        handleMuted(event.value); // not sure if it works this way or on the contrary...
+                    }
+                }, event.when);
+
+            }
+            /*if (event.property==="volume") {
                 handleVolume(event.value, event.rampTime);
             } else if (event.property==="pan") {
                 handlePan(event.value, event.rampTime);
@@ -58,8 +75,8 @@ const ChannelControl = ({name, soundFile, event}) => { // props: name, source,  
             }
             else if (event.property==="mute") {
                 handleMuted(event.value); // not sure if it works this way or on the contrary...
-            }
-        }, [event]
+            }*/
+        }, [events]
 
     );
 
