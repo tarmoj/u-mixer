@@ -7,7 +7,7 @@ import {Paper, Slider, ToggleButton} from "@mui/material";
 // see example: https://github.com/Tonejs/Tone.js/blob/dev/examples/mixer.html
 
 
-const ChannelControl = ({name, soundFile, events}) => { // props: name, source,  event: {property, value, rampTime}
+const ChannelControl = ({name, soundFile, events, masterChannel}) => { // props: name, source,  event: {property, value, rampTime}
 
 
     const [player, setPlayer] = useState(null);
@@ -20,12 +20,23 @@ const ChannelControl = ({name, soundFile, events}) => { // props: name, source, 
 
 
     useEffect(() => {
-            console.log("Create player for: ", soundFile);
 
             if (player===null) {
+                console.log("Create player for: ", soundFile);
 
                 const source = process.env.PUBLIC_URL + "/sounds/" + soundFile;
-                const channel = new Tone.Channel(0, -0.5).toDestination();
+                const channel = new Tone.Channel(0, 0);
+                channel.connect(Tone.Destination);
+                // TODO:
+                // if (masterChannel) {
+                //     console.log("Connect to masterChannel");
+                //     channel.disconnect(Tone.Destination);
+                //     channel.connect(masterChannel);
+                // } else {
+                //     console.log("Connect to Tone.Destination");
+                //     channel.toDestination();
+                // }
+
                 const player = new Tone.Player({
                     url: source,
                     loop: true,
@@ -39,7 +50,19 @@ const ChannelControl = ({name, soundFile, events}) => { // props: name, source, 
                 setChannel(channel);
                 setPlayer(player);
             }
+
     }, []);
+
+    useEffect( () => {
+            if (masterChannel) {
+                console.log("connect to masteChannel", name, masterChannel);
+                channel.disconnect(Tone.getDestination());
+                channel.connect(masterChannel);
+            }
+        }, [masterChannel]
+
+    );
+
 
     useEffect( () => {
             if (!events) return;

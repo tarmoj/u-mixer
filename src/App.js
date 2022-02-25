@@ -4,6 +4,7 @@ import {useState} from "react";
 import ChannelControl from "./ChannelControl";
 import {Button, Paper, ThemeProvider} from "@mui/material";
 import { createTheme } from '@mui/material/styles';
+import ChannelGroup from "./ChannelGroup";
 
 
 
@@ -74,21 +75,21 @@ function App() {
 
   const events = [
 
-      {   channel: "Fl1", // or index in the channel list
+      {   trackName: "Fl1", // or index in the channel list
           when: 10 , //time as string perhaps "0:30"?
           property: "volume", //"volume|pan|mute|solo",
           value: -24,
-          rampTime: 1, // don't handle ramp for now since it should happen in the child somehow... OR: seprate channels to array declared her and and their visual react
+          rampTime: 1, // don't handle ramp for now since it should happen in the child somehow... OR: seprate trackNames to array declared her and and their visual react
           executed: false
       },
-      {   channel: "Fl1", // or index in the channel list
+      {   trackName: "Fl1", // or index in the channel list
           when: 12 , //time as string perhaps "0:30"?
           property: "volume",
           value: 0,
-          rampTime: 0.1, // don't handle ramp for now since it should happen in the child somehow... OR: seprate channels to array declared her and and their visual react
+          rampTime: 0.1, // don't handle ramp for now since it should happen in the child somehow... OR: seprate trackNames to array declared her and and their visual react
           executed: false
       },
-      {   channel: "Cl1", // or index in the channel list
+      {   trackName: "Cl1", // or index in the channel list
           when: 14 , //time as string perhaps "0:30"?
           property: "solo",
           value: true,
@@ -98,30 +99,24 @@ function App() {
 
       ];
 
-
-  const getEventList = (trackIndex) => {
-      const trackEvents = events.filter( (event) => event.channel===tracks[trackIndex].name );
-      console.log("events: ", trackEvents);
-      return trackEvents;
-  };
-
-
-
     return (
     <ThemeProvider theme={darkTheme}>
     <Paper className={"App"}>
         <h1>
           U: mixer test
         </h1>
-        <div className={"overflow"} >
+        <div >
             <table>
                 <tbody>
                 <tr>
-                    { tracks.map( (track, index) =>
+                    <td>
+                        <ChannelGroup name={"Group1"} tracks={tracks.slice(0,6)} events={events} />
+                    </td>
+                    {/*{ tracks.map( (track, index) =>
                         <td key={index}>
                             <ChannelControl name={track.name} soundFile={track.soundFile} events={getEventList(index)}/>
                         </td>
-                    )}
+                    )}*/}
                 </tr>
                 </tbody>
             </table>
