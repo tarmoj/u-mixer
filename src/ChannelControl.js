@@ -1,6 +1,6 @@
 import * as Tone from "tone"
-import {useState, useEffect, useRef} from "react";
-import {Paper, Slider, ToggleButton} from "@mui/material";
+import {useState, useEffect} from "react";
+import {Paper, Slider, ToggleButton, Grid} from "@mui/material";
 
 
 
@@ -53,7 +53,9 @@ const ChannelControl = ({name, soundFile, events, masterChannel}) => { // props:
 
     }, []);
 
-    useEffect( () => {
+
+    // masterChannel messes up panning and solo...
+    /*useEffect( () => {
             if (masterChannel) {
                 console.log("connect to masteChannel", name, masterChannel);
                 channel.disconnect(Tone.getDestination());
@@ -61,7 +63,7 @@ const ChannelControl = ({name, soundFile, events, masterChannel}) => { // props:
             }
         }, [masterChannel]
 
-    );
+    );*/
 
 
     useEffect( () => {
@@ -113,25 +115,38 @@ const ChannelControl = ({name, soundFile, events, masterChannel}) => { // props:
     const handleSolo = (solo) => {
         if (channel) channel.set({solo: solo });
         setSoloed(solo);
+        // the following works the first time but not the rest...
+        // if (masterChannel) { // tryout  -  if masterchannel is not soloed  but a track is, nothing comes through. Not sure if it works.
+        //     if (!masterChannel.solo && solo) {
+        //         masterChannel.solo = true;
+        //     }
+        // }
     }
 
 
     return (
-        <Paper elevation={2}>
-            <div>
-                { loaded ? name : "Loading"}
-            </div>
-            <div className={"center"}>
-                <Slider  orientation={"vertical"} sx={{height: 70 }}   value={volume} min={-36} max={12} onChange={(e) => handleVolume(e.target.value)} />
-            </div>
-            <div>
-                L <Slider sx={{width:40}} min={-1} max={1} step={0.05} value={pan} onChange={(e) => handlePan(e.target.value)} /> R
-            </div>
-            <div>
-                <ToggleButton aria-label="Mute"  value="mute" onChange={ () => handleMuted(!muted) }  selected={muted} color={"secondary"}>M</ToggleButton>
-                <ToggleButton aria-label="Solo" value="solo" onChange={ () => handleSolo(!soloed) } selected={soloed} color={"primary"}>S</ToggleButton>
-            </div>
-
+        <Paper elevation={4}>
+            <Grid item container direction={"column"} justifyContent={"center"} rowSpacing={1}>
+                <Grid item>
+                    { loaded ? name : "Loading"}
+                </Grid>
+                <Grid item>
+                    <Slider  orientation={"vertical"} sx={{height: 70 }}   value={volume} min={-36} max={12} onChange={(e) => handleVolume(e.target.value)} />
+                </Grid>
+                <Grid  item container direction={"row"} spacing={1} alignItems={"center"}>
+                    <Grid item>L</Grid>
+                    <Grid item> <Slider sx={{width:40}} min={-1} max={1} step={0.05} value={pan} onChange={(e) => handlePan(e.target.value)} /> </Grid>
+                    <Grid item>R</Grid>
+                </Grid>
+                <Grid  item container direction={"row"} justifyContent={"center"} spacing={1}>
+                    <Grid item>
+                        <ToggleButton aria-label="Mute"  value="mute" onChange={ () => handleMuted(!muted) }  selected={muted} color={"secondary"}>M</ToggleButton>
+                    </Grid>
+                    <Grid item>
+                        <ToggleButton aria-label="Solo" value="solo" onChange={ () => handleSolo(!soloed) } selected={soloed} color={"primary"}>S</ToggleButton>
+                    </Grid>
+                </Grid>
+            </Grid>
         </Paper>
     );
 }

@@ -80,21 +80,29 @@ function App() {
           property: "volume", //"volume|pan|mute|solo",
           value: -24,
           rampTime: 1, // don't handle ramp for now since it should happen in the child somehow... OR: seprate trackNames to array declared her and and their visual react
-          executed: false
+         
       },
       {   trackName: "Fl1", // or index in the channel list
           when: 12 , //time as string perhaps "0:30"?
           property: "volume",
           value: 0,
           rampTime: 0.1, // don't handle ramp for now since it should happen in the child somehow... OR: seprate trackNames to array declared her and and their visual react
-          executed: false
+         
       },
       {   trackName: "Cl1", // or index in the channel list
           when: 14 , //time as string perhaps "0:30"?
           property: "solo",
           value: true,
           rampTime: 0.1, // don't handle ramp for now since it should happen in the child somehow... OR: seprate channels to array declared her and and their visual react
-          executed: false
+         
+      },
+
+      {   trackName: "Group1", // or index in the channel list
+          when: 6 , //time as string perhaps "0:30"?
+          property: "volume",
+          value: 6,
+          rampTime: 2, // don't handle ramp for now since it should happen in the child somehow... OR: seprate channels to array declared her and and their visual react
+         
       },
 
       ];
@@ -110,8 +118,13 @@ function App() {
                 <tbody>
                 <tr>
                     <td>
-                        <ChannelGroup name={"Group1"} tracks={tracks.slice(0,6)} events={events} />
+                        <ChannelGroup name={"Group1"} tracks={tracks.slice(0,3)} events={events} />
                     </td>
+                    <tr>
+                    <td>
+                        <ChannelGroup name={"Group2"} tracks={tracks.slice(3,6)} events={events} />
+                    </td>
+                    </tr>
                     {/*{ tracks.map( (track, index) =>
                         <td key={index}>
                             <ChannelControl name={track.name} soundFile={track.soundFile} events={getEventList(index)}/>

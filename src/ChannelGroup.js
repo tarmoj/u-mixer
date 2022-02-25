@@ -86,21 +86,21 @@ const ChannelGroup = ({name, tracks, events }) => {
     };
 
     return (
-        <Paper elevation={1}>
-            <Grid container direction={"column"} rowSpacing={1} alignItems={"center"} >
+        <Paper elevation={2}>
+            <Grid item container direction={"column"} rowSpacing={1} alignItems={"center"} >
 
-                <Grid container direction={"row"} spacing={1} justifyContent={"flex-start"} alignItems={"center"} sx={{height:"100"}}>
+                <Grid item container direction={"row"} spacing={1} justifyContent={"flex-start"} alignItems={"center"} >
                     <Grid item>{name}</Grid>
                     <Grid item>
-                        <ToggleButton aria-label="Mute"  value="mute" onChange={ () => handleMuted(!muted) }  selected={muted} color={"secondary"}>M</ToggleButton>
+                        <ToggleButton disabled aria-label="Mute"  value="mute" onChange={ () => handleMuted(!muted) }  selected={muted} color={"secondary"}>M</ToggleButton>
                     </Grid>
                     <Grid item>
-                        <ToggleButton aria-label="Solo" value="solo" onChange={ () => handleSolo(!soloed) } selected={soloed} color={"primary"}>S</ToggleButton>
+                        <ToggleButton disabled aria-label="Solo" value="solo" onChange={ () => handleSolo(!soloed) } selected={soloed} color={"primary"}>S</ToggleButton>
                     </Grid>
                     <Grid item>
-                        <Slider   sx={{width: 40 }}   value={volume} min={-36} max={12} onChange={(e) => handleVolume(e.target.value)} />
+                        <Slider disabled  sx={{width: 60 }}   value={volume} min={-36} max={12} onChange={(e) => handleVolume(e.target.value)} />
                     </Grid>
-                    <Grid container direction={"row"} spacing={1}>
+                    <Grid item container direction={"row"} spacing={1}>
                         { tracks.map( (track, index) =>
                             <Grid item key={index}>
                                 <ChannelControl name={track.name} soundFile={track.soundFile} events={getTrackEventList(track.name)} masterChannel={channel}/>
