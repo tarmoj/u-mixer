@@ -52,19 +52,29 @@ function App() {
     });
 
   const tracks = [ // soundfiles must be ins public/sounds
-      {name: "Fl1", soundFile:"fl.mp3"},
-      {name: "Cl1", soundFile:"cl.mp3"},
-      {name: "Kruup1", soundFile:"kruup.mp3"},
-      {name: "Fl2", soundFile:"fl.mp3"},
-      {name: "Cl2", soundFile:"cl.mp3"},
-      {name: "Kruup2", soundFile:"kruup.mp3"},
+      {name: "Fl_1", soundFile:"Fl_1.mp3"},
+      {name: "Fl_2", soundFile:"Fl_2.mp3"},
+      {name: "Fl_3", soundFile:"Fl_3.mp3"},
+      {name: "Fl_4", soundFile:"Fl_4.mp3"},
+      {name: "Fl_5", soundFile:"Fl_5.mp3"},
 
-      // {name: "Fl3", soundFile:"fl.mp3"},
-      // {name: "Cl3", soundFile:"cl.mp3"},
-      // {name: "Kruup3", soundFile:"kruup.mp3"},
-      // {name: "Fl4", soundFile:"fl.mp3"},
-      // {name: "Cl4", soundFile:"cl.mp3"},
-      // {name: "Kruup4", soundFile:"kruup.mp3"},
+      {name: "Cl_1", soundFile:"Cl_1.mp3"},
+      {name: "Cl_2", soundFile:"Cl_2.mp3"},
+      {name: "Cl_3", soundFile:"Cl_3.mp3"},
+      {name: "Cl_4", soundFile:"Cl_4.mp3"},
+      {name: "Cl_5", soundFile:"Cl_5.mp3"},
+
+      {name: "Vl_1", soundFile:"Vl_1.mp3"},
+      {name: "Vl_2", soundFile:"Vl_2.mp3"},
+      {name: "Vl_3", soundFile:"Vl_3.mp3"},
+      {name: "Vl_4", soundFile:"Vl_4.mp3"},
+      {name: "Vl_5", soundFile:"Vl_5.mp3"},
+
+      {name: "Vlc_1", soundFile:"Vlc_1.mp3"},
+      {name: "Vlc_2", soundFile:"Vlc_2.mp3"},
+      {name: "Vlc_3", soundFile:"Vlc_3.mp3"},
+      {name: "Vlc_4", soundFile:"Vlc_4.mp3"},
+      {name: "Vlc_5", soundFile:"Vlc_5.mp3"},
 
   ];
 
@@ -74,7 +84,7 @@ function App() {
 
 
   const events = [
-
+/*
       {   trackName: "Fl1", // or index in the channel list
           when: 10 , //time as string perhaps "0:30"?
           property: "volume", //"volume|pan|mute|solo",
@@ -104,7 +114,7 @@ function App() {
           rampTime: 2, // don't handle ramp for now since it should happen in the child somehow... OR: seprate channels to array declared her and and their visual react
          
       },
-
+*/
       ];
 
     return (
@@ -118,12 +128,20 @@ function App() {
                 <tbody>
                 <tr>
                     <td>
-                        <ChannelGroup name={"Group1"} tracks={tracks.slice(0,3)} events={events} />
+                        <ChannelGroup name={"Fl"} tracks={tracks.slice(0,5)} events={events} />
+                    </td>
+
+                    <td>
+                        <ChannelGroup name={"Cl"} tracks={tracks.slice(5,10)} events={events} />
                     </td>
                     <tr>
-                    <td>
-                        <ChannelGroup name={"Group2"} tracks={tracks.slice(3,6)} events={events} />
-                    </td>
+
+                        <td>
+                            <ChannelGroup name={"Vl"} tracks={tracks.slice(10,15)} events={events} />
+                        </td>
+                        <td>
+                            <ChannelGroup name={"Vlc"} tracks={tracks.slice(15,20)} events={events} />
+                        </td>
                     </tr>
                     {/*{ tracks.map( (track, index) =>
                         <td key={index}>
