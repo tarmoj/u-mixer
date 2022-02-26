@@ -15,7 +15,7 @@ const ChannelControl = ({name, soundFile, events, masterChannel}) => { // props:
     const [soloed, setSoloed] = useState(false);
     const [muted, setMuted] = useState(false);
     const [loaded, setLoaded] = useState(false);
-    const [volume, setVolume] = useState(0);
+    const [volume, setVolume] = useState(-60);
     const [pan, setPan] = useState(0);
 
 
@@ -25,7 +25,7 @@ const ChannelControl = ({name, soundFile, events, masterChannel}) => { // props:
                 console.log("Create player for: ", soundFile);
 
                 const source = process.env.PUBLIC_URL + "/sounds/" + soundFile;
-                const channel = new Tone.Channel(0, 0);
+                const channel = new Tone.Channel({ channelCount:2, volume:-60});
                 channel.connect(Tone.Destination);
                 // TODO:
                 // if (masterChannel) {
@@ -55,7 +55,7 @@ const ChannelControl = ({name, soundFile, events, masterChannel}) => { // props:
 
 
     // masterChannel messes up panning and solo...
-    /*useEffect( () => {
+    useEffect( () => {
             if (masterChannel) {
                 console.log("connect to masteChannel", name, masterChannel);
                 channel.disconnect(Tone.getDestination());
@@ -63,7 +63,7 @@ const ChannelControl = ({name, soundFile, events, masterChannel}) => { // props:
             }
         }, [masterChannel]
 
-    );*/
+    );
 
 
     useEffect( () => {

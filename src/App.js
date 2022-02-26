@@ -132,15 +132,16 @@ function App() {
                     </td>
 
                     <td>
-                        <ChannelGroup name={"Cl"} tracks={tracks.slice(5,10)} events={events} />
+                        <ChannelGroup name={"Cl"} tracks={tracks.slice(5,9)} events={events} />
                     </td>
+                </tr>
                     <tr>
 
                         <td>
-                            <ChannelGroup name={"Vl"} tracks={tracks.slice(10,15)} events={events} />
+                            <ChannelGroup name={"Vl"} tracks={tracks.slice(10,14)} events={events} />
                         </td>
                         <td>
-                            <ChannelGroup name={"Vlc"} tracks={tracks.slice(15,20)} events={events} />
+                            <ChannelGroup name={"Vlc"} tracks={tracks.slice(15,19)} events={events} />
                         </td>
                     </tr>
                     {/*{ tracks.map( (track, index) =>
@@ -148,7 +149,7 @@ function App() {
                             <ChannelControl name={track.name} soundFile={track.soundFile} events={getEventList(index)}/>
                         </td>
                     )}*/}
-                </tr>
+
                 </tbody>
             </table>
         </div>

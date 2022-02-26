@@ -16,7 +16,7 @@ const ChannelGroup = ({name, tracks, events }) => {
 
     useEffect(() => {
         console.log("Setup masterChannel: ", name);
-        const channel = new Tone.Channel(0, 0).toDestination();
+        const channel = new Tone.Channel({ channelCount:2}).toDestination();
         setChannel(channel);
     }, []);
 
@@ -92,13 +92,13 @@ const ChannelGroup = ({name, tracks, events }) => {
                 <Grid item container direction={"row"} spacing={1} justifyContent={"flex-start"} alignItems={"center"} >
                     <Grid item>{name}</Grid>
                     <Grid item>
-                        <ToggleButton disabled aria-label="Mute"  value="mute" onChange={ () => handleMuted(!muted) }  selected={muted} color={"secondary"}>M</ToggleButton>
+                        <ToggleButton  aria-label="Mute"  value="mute" onChange={ () => handleMuted(!muted) }  selected={muted} color={"secondary"}>M</ToggleButton>
                     </Grid>
                     <Grid item>
-                        <ToggleButton disabled aria-label="Solo" value="solo" onChange={ () => handleSolo(!soloed) } selected={soloed} color={"primary"}>S</ToggleButton>
+                        <ToggleButton  aria-label="Solo" value="solo" onChange={ () => handleSolo(!soloed) } selected={soloed} color={"primary"}>S</ToggleButton>
                     </Grid>
                     <Grid item>
-                        <Slider disabled  sx={{width: 60 }}   value={volume} min={-36} max={12} onChange={(e) => handleVolume(e.target.value)} />
+                        <Slider  sx={{width: 60 }}   value={volume} min={-36} max={12} onChange={(e) => handleVolume(e.target.value)} />
                     </Grid>
                     <Grid item container direction={"row"} spacing={1}>
                         { tracks.map( (track, index) =>
