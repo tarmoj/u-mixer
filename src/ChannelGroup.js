@@ -24,7 +24,7 @@ const ChannelGroup = ({name, tracks, events }) => {
             const groupEvents = getGroupEventList();
             if (!groupEvents) return;
             if (groupEvents.length===0) return;
-            console.log("Events: ", groupEvents );
+            //console.log("Events: ", groupEvents );
 
             for (let event of groupEvents) {
                 console.log(event);
@@ -85,8 +85,10 @@ const ChannelGroup = ({name, tracks, events }) => {
         return groupEvents;
     };
 
+    const trackWidth = 90;
+
     return (
-        <Paper elevation={2}>
+        <Paper elevation={2} sx={{width: 5*trackWidth }}>
             <Grid item container direction={"column"} rowSpacing={1} alignItems={"center"} >
 
                 <Grid item container direction={"row"} spacing={1} justifyContent={"flex-start"} alignItems={"center"} >

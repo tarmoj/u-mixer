@@ -2,7 +2,7 @@ import './App.css';
 import * as Tone from "tone"
 import {useState} from "react";
 import ChannelControl from "./ChannelControl";
-import {Button, Paper, ThemeProvider} from "@mui/material";
+import {Backdrop, Button, CircularProgress, Paper, ThemeProvider} from "@mui/material";
 import { createTheme } from '@mui/material/styles';
 import ChannelGroup from "./ChannelGroup";
 
@@ -13,6 +13,7 @@ import ChannelGroup from "./ChannelGroup";
 const Control = () => {
 
     const [time, setTime] = useState(0);
+
 
     const start = () => {
         console.log("Start");
@@ -29,6 +30,8 @@ const Control = () => {
         Tone.Transport.stop("+0.1");
         //setTime(0);
     }
+    
+    
 
     return (
         <>
@@ -45,10 +48,26 @@ const Control = () => {
 
 function App() {
 
+    const [counter, setCounter] = useState(0); // somehow Tone.loaded fires at start and then after all clips are loaded
+
+
+//test
+    Tone.loaded().then(() => {
+        if (counter<1) {
+            setCounter(counter+1);
+            console.log("Loaded counter: ", counter);
+        } else {
+            console.log("perhaps how loaded?")
+        }
+    });
+
     const darkTheme = createTheme({
         palette: {
             mode: 'dark',
         },
+        // typography: { // has no effect on the size, only letters in buttons
+        //     fontSize: 8,
+        // },
     });
 
   const tracks = [ // soundfiles must be ins public/sounds
@@ -78,9 +97,6 @@ function App() {
 
   ];
 
-  const groups = [
-      {firsTrack: 0, lastTrack:5, name: "Group1"}
-  ]
 
 
   const events = [
@@ -117,9 +133,18 @@ function App() {
 */
       ];
 
+
+    
+
     return (
     <ThemeProvider theme={darkTheme}>
     <Paper className={"App"}>
+        <Backdrop
+            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            open={ counter<1 }
+            // onClick={handleClose}
+        ><CircularProgress color="inherit" />
+        </Backdrop>
         <h1>
           U: mixer test
         </h1>
