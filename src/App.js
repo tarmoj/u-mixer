@@ -2,7 +2,7 @@ import './App.css';
 import * as Tone from "tone"
 import {useState} from "react";
 import ChannelControl from "./ChannelControl";
-import {Backdrop, Button, CircularProgress, Paper, ThemeProvider} from "@mui/material";
+import {Backdrop, Button, CircularProgress, Grid, Paper, ThemeProvider} from "@mui/material";
 import { createTheme } from '@mui/material/styles';
 import ChannelGroup from "./ChannelGroup";
 
@@ -137,51 +137,41 @@ function App() {
     
 
     return (
-    <ThemeProvider theme={darkTheme}>
-    <Paper className={"App"}>
-        <Backdrop
-            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-            open={ counter<1 }
-            // onClick={handleClose}
-        ><CircularProgress color="inherit" />
-        </Backdrop>
-        <h1>
-          U: mixer test
-        </h1>
-        <div >
-            <table>
-                <tbody>
-                <tr>
-                    <td>
-                        <ChannelGroup name={"Fl"} tracks={tracks.slice(0,5)} events={events} />
-                    </td>
+        <ThemeProvider theme={darkTheme}>
+            <Paper className={"App"}>
+                <Backdrop
+                    sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                    open={ counter<1 }
+                    // onClick={handleClose}
+                ><CircularProgress color="inherit" />
+                </Backdrop>
+                <h1>
+                    U: mixer test
+                </h1>
+                <div >
+                    <Grid container direction={"column"} spacing={1}>
+                        <Grid item container direction={"row"} spacing={1}>
+                            <Grid item>
+                                <ChannelGroup name={"Fl"} tracks={tracks.slice(0,4)} events={events} />
+                            </Grid>
+                            <Grid item>
+                                <ChannelGroup name={"Cl"} tracks={tracks.slice(5,9)} events={events} />
+                            </Grid>
+                        </Grid>
+                        <Grid item container direction={"row"} spacing={1}>
+                            <Grid item>
+                                <ChannelGroup name={"Vl"} tracks={tracks.slice(10,14)} events={events} />
+                            </Grid>
+                            <Grid item>
+                                <ChannelGroup name={"Vlc"} tracks={tracks.slice(15,19)} events={events} />
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </div>
+                <Control />
 
-                    <td>
-                        <ChannelGroup name={"Cl"} tracks={tracks.slice(5,9)} events={events} />
-                    </td>
-                </tr>
-                    <tr>
-
-                        <td>
-                            <ChannelGroup name={"Vl"} tracks={tracks.slice(10,14)} events={events} />
-                        </td>
-                        <td>
-                            <ChannelGroup name={"Vlc"} tracks={tracks.slice(15,19)} events={events} />
-                        </td>
-                    </tr>
-                    {/*{ tracks.map( (track, index) =>
-                        <td key={index}>
-                            <ChannelControl name={track.name} soundFile={track.soundFile} events={getEventList(index)}/>
-                        </td>
-                    )}*/}
-
-                </tbody>
-            </table>
-        </div>
-        <Control />
-
-    </Paper>
-    </ThemeProvider>
+            </Paper>
+        </ThemeProvider>
   );
 }
 
