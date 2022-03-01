@@ -85,10 +85,11 @@ const ChannelGroup = ({name, tracks, events }) => {
         return groupEvents;
     };
 
-    const trackWidth = 90;
+    const getWidth = ( () => {
+        const width = tracks.length * 80; console.log("Paper width width", width); return Math.max(200, width) }) ;
 
     return (
-        <Paper elevation={2} sx={{width: 5*trackWidth }}>
+        <Paper elevation={2} sx={{width: getWidth() }}>
             <Grid item container direction={"column"} rowSpacing={1} alignItems={"center"} >
 
                 <Grid item container direction={"row"} spacing={1} justifyContent={"flex-start"} alignItems={"center"} >
