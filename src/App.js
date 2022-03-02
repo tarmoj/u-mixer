@@ -145,10 +145,10 @@ function App() {
 
       for (let track of tracks) {
           const trackName = track.name;
-          const property = getRandomElement(["volume", "pan", "solo", "mute"]);
+          const property = getRandomElement(["volume", "pan"]); //, "solo", "mute"]);
           let value = 0;
           const minVolume = -36;
-          const maxVolume = 12;
+          const maxVolume = 6;
           switch (property) {
               case "volume": value = minVolume +  Math.random()*(maxVolume-minVolume); break;
               case "pan": value = -1 + Math.random()*2; break;
@@ -185,6 +185,7 @@ function App() {
                 <h1>
                     U: mixer test
                 </h1>
+                <small>v 0.1.0</small>
                 <div >
 
                     <Grid container direction={"column"} spacing={1}>

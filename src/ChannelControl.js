@@ -132,7 +132,7 @@ const ChannelControl = ({name, soundFile, events, masterChannel, soloChange}) =>
                     { loaded ? name : "Loading"}
                 </Grid>
                 <Grid item>
-                    <Slider  orientation={"vertical"} sx={{height: 70 }}   value={volume} min={-36} max={12} onChange={(e) => handleVolume(e.target.value)} />
+                    <Slider  orientation={"vertical"} sx={{height: 70 }}   value={volume} min={-36} max={6} onChange={(e) => handleVolume(e.target.value)} />
                 </Grid>
                 <Grid  item container direction={"row"} spacing={1} alignItems={"center"}>
                     <Grid item>L</Grid>

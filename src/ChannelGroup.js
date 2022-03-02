@@ -115,7 +115,7 @@ const ChannelGroup = ({name, tracks, events }) => {
                         <ToggleButton  aria-label="Solo" value="solo" onChange={ () => handleSolo(!soloed) } selected={soloed} color={"primary"}>S</ToggleButton>
                     </Grid>
                     <Grid item>
-                        <Slider  sx={{width: 60 }}   value={volume} min={-36} max={12} onChange={(e) => handleVolume(e.target.value)} />
+                        <Slider  sx={{width: 60 }}   value={volume} min={-36} max={6} onChange={(e) => handleVolume(e.target.value)} />
                     </Grid>
                     <Grid item container direction={"row"} spacing={1}>
                         { tracks.map( (track, index) =>
