@@ -7,7 +7,7 @@ import {Paper, Slider, ToggleButton, Grid} from "@mui/material";
 // see example: https://github.com/Tonejs/Tone.js/blob/dev/examples/mixer.html
 
 
-const ChannelControl = ({name, soundFile, events, masterChannel}) => { // props: name, source,  event: {property, value, rampTime}
+const ChannelControl = ({name, soundFile, events, masterChannel, soloChange}) => { // props: name, source,  event: {property, value, rampTime}
 
 
     const [player, setPlayer] = useState(null);
@@ -115,6 +115,7 @@ const ChannelControl = ({name, soundFile, events, masterChannel}) => { // props:
     const handleSolo = (solo) => {
         if (channel) channel.set({solo: solo });
         setSoloed(solo);
+        soloChange(name, solo)
         // the following works the first time but not the rest...
         // if (masterChannel) { // tryout  -  if masterchannel is not soloed  but a track is, nothing comes through. Not sure if it works.
         //     if (!masterChannel.solo && solo) {

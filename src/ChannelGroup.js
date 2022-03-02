@@ -13,6 +13,7 @@ const ChannelGroup = ({name, tracks, events }) => {
     const [channel, setChannel] = useState(null);
     const [soloed, setSoloed] = useState(false);
     const [muted, setMuted] = useState(false);
+    const [trackSolos, setTrackSolos] = useState(new Array(10)); // define 10 by default
 
     useEffect(() => {
         console.log("Setup masterChannel: ", name);
@@ -75,18 +76,31 @@ const ChannelGroup = ({name, tracks, events }) => {
     const getTrackEventList = (trackName) => {
         const track =  tracks.find( (t) => t.name === trackName );
         const trackEvents = events.filter( (event) => event.trackName===track.name );
-        console.log("events: ", trackEvents);
+        //console.log("events: ", trackEvents);
         return trackEvents;
     };
 
     const getGroupEventList = () => {
         const groupEvents = events.filter( (event) => event.trackName===name );
-        console.log("events: ", groupEvents);
+        //console.log("events: ", groupEvents);
         return groupEvents;
     };
 
     const getWidth = ( () => {
         const width = tracks.length * 80; console.log("Paper width width", width); return Math.max(200, width) }) ;
+
+    const handleChildSoloChange= (trackName, solo) => {
+        const index = tracks.findIndex((t) => t.name === trackName );
+        const currentSolos = trackSolos; // no deep copy here since we don'y want re-rednder
+        currentSolos[index] = solo;
+        console.log("Solos array:", currentSolos);
+        if (currentSolos.some( (item) => item===true )) {
+            handleSolo(true);
+        } else {
+            handleSolo(false);
+        }
+        setTrackSolos(currentSolos);
+    }
 
     return (
         <Paper elevation={2} sx={{width: getWidth() }}>
@@ -106,7 +120,7 @@ const ChannelGroup = ({name, tracks, events }) => {
                     <Grid item container direction={"row"} spacing={1}>
                         { tracks.map( (track, index) =>
                             <Grid item key={index}>
-                                <ChannelControl name={track.name} soundFile={track.soundFile} events={getTrackEventList(track.name)} masterChannel={channel}/>
+                                <ChannelControl name={track.name} soundFile={track.soundFile} events={getTrackEventList(track.name)} masterChannel={channel} soloChange={handleChildSoloChange}/>
                             </Grid>
                         )}
                     </Grid>
