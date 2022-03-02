@@ -1,7 +1,6 @@
 import './App.css';
 import * as Tone from "tone"
 import {useState} from "react";
-import ChannelControl from "./ChannelControl";
 import {Backdrop, Button, CircularProgress, Grid, Paper, ThemeProvider} from "@mui/material";
 import { createTheme } from '@mui/material/styles';
 import ChannelGroup from "./ChannelGroup";
@@ -28,28 +27,34 @@ const Control = () => {
     const stop = () => {
         console.log("Stop");
         Tone.Transport.stop("+0.1");
-        //setTime(0);
     }
     
     
 
     return (
-        <>
-            <div>
-                <Button aria-label={"Play"} onClick={start} >Play</Button>
-                <Button onClick={stop}>Stop</Button>
-            </div>
-            <div>
-                Time: {time}
-            </div>
-        </>
+        <div>
+            <Grid container direction={"row"} spacing={1}>
+                <Grid item>
+                    <Button aria-label={"Play"} onClick={start} >Play</Button>
+                </Grid>
+                {/*<Grid item>
+                    <Button aria-label={"Pause"} onClick={()=>Tone.Transport.pause("+0.05")} >Pause</Button>
+                </Grid>*/}
+                <Grid item>
+                    <Button aria-label={"Stop"} onClick={stop}>Stop</Button>
+                </Grid>
+                <Grid item>
+                    Time: {Math.floor(time/60)} : {time%60}
+                </Grid>
+            </Grid>
+        </div>
     );
 }
 
 function App() {
 
     const [counter, setCounter] = useState(0); // somehow Tone.loaded fires at start and then after all clips are loaded
-
+    const [events, setEvents] = useState([]);
 
 //test
     Tone.loaded().then(() => {
@@ -97,9 +102,11 @@ function App() {
 
   ];
 
+  const getRandomElement = (array) => {
+      return array[Math.floor(Math.random()*array.length)];
+  }
 
-
-  const events = [
+  //const events = [
 /*
       {   trackName: "Fl1", // or index in the channel list
           when: 10 , //time as string perhaps "0:30"?
@@ -131,8 +138,40 @@ function App() {
          
       },
 */
-      ];
+      //];
 
+  //TODO: testi, kas "+0.1" sobib Tone.scheduleX jaoks
+
+  const addRandomEvents = () => { //  , when="+0.1"?
+      const currentEvents = events.slice(); // or should it be an empty array?
+
+      for (let track of tracks) {
+          const trackName = track.name;
+          const property = getRandomElement(["volume", "pan", "solo", "mute"]);
+          let value = 0;
+          const minVolume = -36;
+          const maxVolume = 12;
+          switch (property) {
+              case "volume": value = minVolume +  Math.random()*(maxVolume-minVolume); break;
+              case "pan": value = -1 + Math.random()*2; break;
+              case "solo": value = (Math.random() >= 0.5) ; break;
+              case "mute": value = (Math.random() >= 0.5) ; break;
+              default: console.log("unknown property", property); break;
+          }
+          const maxRamp = 2;
+          const rampTime = (["pan", "volume"].includes(property)) ? 0.05 + Math.random()*maxRamp : 0;
+          const newEvent = {
+              trackName: trackName,
+              when: Tone.Transport.seconds+0.5, //experiment with this
+              property: property,
+              value: value,
+              rampTime: rampTime
+          }
+          console.log("created event: ", newEvent);
+          currentEvents.push(newEvent); // not sure if triggers property change
+      }
+      setEvents(currentEvents);
+  }
 
     
 
@@ -149,7 +188,13 @@ function App() {
                     U: mixer test
                 </h1>
                 <div >
+
                     <Grid container direction={"column"} spacing={1}>
+                        <Grid item>
+                            <Button aria-label={"Event"} onClick={()=>addRandomEvents("Fl_1")} >Random event</Button>
+                            <Control />
+                        </Grid>
+
                         <Grid item container direction={"row"} spacing={1}>
                             <Grid item>
                                 <ChannelGroup name={"Fl"} tracks={tracks.slice(0,4)} events={events} />
@@ -168,7 +213,7 @@ function App() {
                         </Grid>
                     </Grid>
                 </div>
-                <Control />
+
 
             </Paper>
         </ThemeProvider>

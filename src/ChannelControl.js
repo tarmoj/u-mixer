@@ -69,7 +69,7 @@ const ChannelControl = ({name, soundFile, events, masterChannel}) => { // props:
     useEffect( () => {
             if (!events) return;
             if (events.length===0) return;
-            console.log("Events: ", events );
+            //console.log("Events: ", events );
 
             for (let event of events) {
                 console.log(event);
