@@ -33,20 +33,18 @@ const Control = () => {
 
     return (
         <div>
-            <Grid container direction={"row"} spacing={1}>
-                <Grid item>
+
                     <Button aria-label={"Play"} onClick={start} >Play</Button>
-                </Grid>
+
                 {/*<Grid item>
                     <Button aria-label={"Pause"} onClick={()=>Tone.Transport.pause("+0.05")} >Pause</Button>
                 </Grid>*/}
-                <Grid item>
+
                     <Button aria-label={"Stop"} onClick={stop}>Stop</Button>
-                </Grid>
-                <Grid item>
+
+
                     Time: {Math.floor(time/60)} : {time%60}
-                </Grid>
-            </Grid>
+
         </div>
     );
 }
@@ -190,9 +188,13 @@ function App() {
                 <div >
 
                     <Grid container direction={"column"} spacing={1}>
-                        <Grid item>
+                        <Grid item container direction={"row"} spacing={1}>
+                            <Grid item>
                             <Button aria-label={"Event"} onClick={()=>addRandomEvents("Fl_1")} >Random event</Button>
-                            <Control />
+                            </Grid>
+                            <Grid item>
+                                <Control />
+                            </Grid>
                         </Grid>
 
                         <Grid item container direction={"row"} spacing={1}>
