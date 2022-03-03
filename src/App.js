@@ -15,6 +15,10 @@ import {
 import { createTheme } from '@mui/material/styles';
 import ChannelGroup from "./ChannelGroup";
 import * as JSON5 from "json5";
+import packageInfo from '../package.json';
+
+
+const version = packageInfo.version;
 
 
 
@@ -147,23 +151,27 @@ function App() {
     //];
 
     const defaultEventText = `[
-    // <- this is a comment    
-        // first is example, change it as you need    
-        {   trackName: "Fl1", // name of the track where change will happen You can use also grout names
-          when: 10 , //time as string perhaps "0:30"?
-          property: "volume", //"volume|pan|mute|solo",
-          value: -24, // -36..6 for volume, -1 (left)..1 (right) for pan, true/false for solor or mute
-          rampTime: 1, // during how long time in seconds the change will take place (for volume and pan)
-      },
-      {   trackName: "Fl1", // empty template
-          when: 12 , //time as string perhaps "0:30"?
-          property: "volume",
-          value: 0,
-          rampTime: 0.1, // don't handle ramp for now since it should happen in the child somehow... OR: seprate trackNames to array declared her and and their visual react
-         
-      },
+// <- this is a comment    
+
+// first is example, change it as you need    
+{   trackName: "Fl_1", // name of the track or group where change will happen
+    when: 10 , //time as string perhaps "0:30"?
+    property: "volume", //"volume|pan|mute|solo",
+    value: -24, // -36..6 for volume, -1 (left)..1 (right) for pan, true/false for solor or mute
+    rampTime: 1, // during how long time in seconds the change will take place (for volume and pan)
+},
+
+{   trackName: "Fl_1", // empty template
+     when: 12 , 
+     property: "volume",
+     value: 0,
+     rampTime: 0.1,     
+},
     
-    ]`
+]`;
+
+    const [eventText, setEventText] = useState(defaultEventText);
+
 
 
 
@@ -210,7 +218,7 @@ function App() {
         }
         console.log("parsed events: ", newEvents);
         setEvents(newEvents);
-
+        setEventText(text);
     }
 
     const eventAreaRef = useRef();
@@ -220,10 +228,12 @@ function App() {
                 <DialogTitle>Define changes</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        The mixer change events are defined as object  between curly brackets. If there are many events, they must be separated by comma.<br />
-                        Copy the template example and change parameters as needed.<br />
+                        The mixer change events are defined below as in JSON(5) format. <br />
+                        Just follow the example,  copy the event template and change parameters as needed.<br />
+                        NB! Change only the values of the fields (after :), not the format.
+                        If there are many events, they must be separated by comma.<br />
                     </DialogContentText>
-                    <TextareaAutosize style={{width:"100%"}} id="eventsArea" ref={eventAreaRef} defaultValue={defaultEventText}/>
+                    <TextareaAutosize style={{width:"100%"}} id="eventsArea" ref={eventAreaRef} defaultValue={eventText}/>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={()=>setEventDialogOpen(false)}>Cancel</Button>
@@ -247,7 +257,7 @@ function App() {
                 <h1>
                     U: mixer test
                 </h1>
-                <small>v 0.1.0</small>
+                <small>v {version}</small>
                 <div >
 
                     <Grid container direction={"column"} spacing={1}>
@@ -268,21 +278,21 @@ function App() {
                                 <ChannelGroup name={"Fl"} tracks={tracks.slice(0,4)} events={events} />
                             </Grid>
                             <Grid item>
-                                {/*
+
                                 <ChannelGroup name={"Cl"} tracks={tracks.slice(5,9)} events={events} />
-*/}
+
                             </Grid>
                         </Grid>
                         <Grid item container direction={"row"} spacing={1}>
                             <Grid item>
-                                {/*
+
                                 <ChannelGroup name={"Vl"} tracks={tracks.slice(10,14)} events={events} />
-*/}
+
                             </Grid>
                             <Grid item>
-                                {/*
+
                                 <ChannelGroup name={"Vlc"} tracks={tracks.slice(15,19)} events={events} />
-*/}
+
                             </Grid>
                         </Grid>
                     </Grid>
