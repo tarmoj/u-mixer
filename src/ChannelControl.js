@@ -39,7 +39,7 @@ const ChannelControl = ({name, soundFile, events, masterChannel, soloChange}) =>
 
                 const player = new Tone.Player({
                     url: source,
-                    loop: true,
+                    loop: false,
                     onload: () => {
                         console.log("Local onload -  loaded", name, soundFile);
                         setLoaded(true);
@@ -116,12 +116,6 @@ const ChannelControl = ({name, soundFile, events, masterChannel, soloChange}) =>
         if (channel) channel.set({solo: solo });
         setSoloed(solo);
         soloChange(name, solo)
-        // the following works the first time but not the rest...
-        // if (masterChannel) { // tryout  -  if masterchannel is not soloed  but a track is, nothing comes through. Not sure if it works.
-        //     if (!masterChannel.solo && solo) {
-        //         masterChannel.solo = true;
-        //     }
-        // }
     }
 
 
