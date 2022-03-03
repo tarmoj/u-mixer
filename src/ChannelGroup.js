@@ -87,7 +87,7 @@ const ChannelGroup = ({name, tracks, events }) => {
     };
 
     const getWidth = ( () => {
-        const width = tracks.length * 80; console.log("Paper width width", width); return Math.max(200, width) }) ;
+        const width = tracks.length * 80; return Math.max(200, width) }) ;
 
     const handleChildSoloChange= (trackName, solo) => {
         const index = tracks.findIndex((t) => t.name === trackName );

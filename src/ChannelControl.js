@@ -57,7 +57,7 @@ const ChannelControl = ({name, soundFile, events, masterChannel, soloChange}) =>
     // masterChannel messes up panning and solo...
     useEffect( () => {
             if (masterChannel) {
-                console.log("connect to masteChannel", name, masterChannel);
+                //console.log("connect to masteChannel", name, masterChannel);
                 channel.disconnect(Tone.getDestination());
                 channel.connect(masterChannel);
             }
