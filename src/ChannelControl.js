@@ -27,15 +27,7 @@ const ChannelControl = ({name, soundFile, events, masterChannel, soloChange}) =>
                 const source = process.env.PUBLIC_URL + "/sounds/" + soundFile;
                 const channel = new Tone.Channel({ channelCount:2, volume:-60});
                 channel.connect(Tone.Destination);
-                // TODO:
-                // if (masterChannel) {
-                //     console.log("Connect to masterChannel");
-                //     channel.disconnect(Tone.Destination);
-                //     channel.connect(masterChannel);
-                // } else {
-                //     console.log("Connect to Tone.Destination");
-                //     channel.toDestination();
-                // }
+
 
                 const player = new Tone.Player({
                     url: source,

@@ -22,10 +22,11 @@ import {tracks} from "./tracks"
 const version = packageInfo.version;
 
 
-
 const Control = () => {
 
     const [time, setTime] = useState(0);
+
+    const videoRef= useRef(); // does it work here?
 
 
     const start = () => {
@@ -36,17 +37,25 @@ const Control = () => {
         Tone.Transport.scheduleRepeat(() => {
             setTime(Math.floor(Tone.Transport.seconds));
         }, 1);
+        console.log("Video status: ", videoRef.current.paused);
+        videoRef.current.play();
     }
 
     const stop = () => {
         console.log("Stop");
         Tone.Transport.stop("+0.1");
+        videoRef.current.pause();
+        videoRef.current.currentTime = 0;
     }
 
     const clipDuration = 310;
 
     return (
         <div>
+            <video className={"videoFrame"} width={320} height={240} ref={videoRef}>
+                <source src={process.env.PUBLIC_URL + "miimiline-small.mp4"}/>
+                Your browser does not support the video tag.
+            </video>
             <Button aria-label={"Play"} onClick={start} >Play</Button>
             {/*<Grid item>
                     <Button aria-label={"Pause"} onClick={()=>Tone.Transport.pause("+0.05")} >Pause</Button>
@@ -188,6 +197,7 @@ function App() {
 
     return (
         <ThemeProvider theme={darkTheme}>
+
             <Paper className={"App"}>
                 <Backdrop
                     sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -239,8 +249,6 @@ function App() {
                         </Grid>
                     </Grid>
                 </div>
-
-
             </Paper>
         </ThemeProvider>
     );
