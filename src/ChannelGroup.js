@@ -48,7 +48,7 @@ const ChannelGroup = ({name, tracks, events }) => {
 
 
     const handleVolume = (volume, rampTime=0.05) => {
-        console.log("ChannelControl::handleVolume", volume)
+        //console.log("ChannelControl::handleVolume", volume)
         if (channel) {
             if (!channel.muted) channel.volume.rampTo(volume, rampTime); // otherwise changing the channel volume will open the channel in muted state
             setVolume(volume);

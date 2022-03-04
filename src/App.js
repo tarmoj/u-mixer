@@ -31,9 +31,8 @@ const Control = () => {
 
     const start = () => {
         console.log("Start");
-        Tone.Transport.stop("+0.01"); // strange tryout kind of works
+        //Tone.Transport.stop("+0.01"); // strange tryout kind of works
         Tone.Transport.start("+0.1"); // is this necessary
-        //Tone.Transport.seconds = 0; // experiment with this
         Tone.Transport.scheduleRepeat(() => {
             setTime(Math.floor(Tone.Transport.seconds));
         }, 1);
@@ -41,9 +40,16 @@ const Control = () => {
         videoRef.current.play();
     }
 
+    const pause = () => {
+        Tone.Transport.pause("+0.01");
+        videoRef.current.pause();
+    }
+
     const stop = () => {
         console.log("Stop");
-        Tone.Transport.stop("+0.1");
+        //Tone.Transport.seconds = 0;
+        Tone.Transport.stop("+0.01");
+        setTime(0);
         videoRef.current.pause();
         videoRef.current.currentTime = 0;
     }
@@ -53,13 +59,11 @@ const Control = () => {
     return (
         <div>
             <video className={"videoFrame"} width={320} height={240} ref={videoRef}>
-                <source src={process.env.PUBLIC_URL + "miimiline-small.mp4"}/>
+                <source src={process.env.PUBLIC_URL + "/miimiline-small.mp4"}/>
                 Your browser does not support the video tag.
             </video>
             <Button aria-label={"Play"} onClick={start} >Play</Button>
-            {/*<Grid item>
-                    <Button aria-label={"Pause"} onClick={()=>Tone.Transport.pause("+0.05")} >Pause</Button>
-                </Grid>*/}
+            <Button aria-label={"Pause"} onClick={pause} >Pause</Button>
             <Button aria-label={"Stop"} onClick={stop}>Stop</Button>
             Time: {Math.floor(time/60)} : {time%60}
             <LinearProgress sx={{width:60}}  variant="determinate" value={100*time/clipDuration} />
@@ -194,16 +198,26 @@ function App() {
         );
     };
 
+    const [userTouched, setUserTouched]  = useState(false);
 
+    const resumeAudio = () => {
+        Tone.getContext().resume();
+        console.log("Audio resume");
+        setUserTouched(true);
+    }
+
+    // TODO: Backdrop should be open until !userTouched
     return (
         <ThemeProvider theme={darkTheme}>
 
             <Paper className={"App"}>
                 <Backdrop
                     sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-                    open={ counter<1 }
+                    open={  counter<1 }
                     // onClick={handleClose}
-                ><CircularProgress color="inherit" />
+                >
+                    { userTouched ? <CircularProgress color="inherit" /> : <Button variant={"contained"} onClick={()=>resumeAudio()}>Start</Button>  }
+
                 </Backdrop>
                 {createEventDialog()}
                 <h1>
@@ -213,7 +227,7 @@ function App() {
                 <div >
 
                     <Grid container direction={"column"} spacing={1}>
-                        <Grid item container direction={"row"} spacing={1}>
+                        <Grid item container direction={"row"} spacing={1} >
                             <Grid item>
                                 <Button aria-label={"Define events"} onClick={()=>setEventDialogOpen(true)} >Define events</Button>
                             </Grid>
