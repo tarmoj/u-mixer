@@ -1,0 +1,138 @@
+[
+
+	{
+		"title": "Andres Lõo -  Mimic Score",
+		"credits": "",
+		"trackGroups": [
+			{
+				"name": "Ver1",
+				"tracks": [
+					{"name": "Fl_1", "soundFile":"miimiline/Fl_1.mp3"},
+					{"name": "Cl_1", "soundFile":"miimiline/Cl_1.mp3"},
+					{"name": "Pf_1", "soundFile":"miimiline/Klaver_1.mp3"},
+					{"name": "Perc_1", "soundFile":"miimiline/Lkp_1.mp3"},
+					{"name": "Vl_1", "soundFile":"miimiline/Vl_1.mp3"},
+					{"name": "Vlc_1", "soundFile":"miimiline/Vlc_1.mp3"}
+				]
+			},
+			{
+				"name": "Ver2",
+				"tracks": [
+					{"name": "Fl_2", "soundFile":"miimiline/Fl_2.mp3"},
+					{"name": "Cl_2", "soundFile":"miimiline/Cl_2.mp3"},
+					{"name": "Pf_2", "soundFile":"miimiline/Klaver_2.mp3"},
+					{"name": "Perc_2", "soundFile":"miimiline/Lkp_2.mp3"},
+					{"name": "Vl_2", "soundFile":"miimiline/Vl_2.mp3"},
+					{"name": "Vlc_2", "soundFile":"miimiline/Vlc_2.mp3"}
+				]
+			},
+
+			{
+				"name": "Ver3",
+				"tracks": [
+					{"name": "Fl_", "soundFile":"miimiline/Fl_3.mp3"},
+					{"name": "Cl_3", "soundFile":"miimiline/Cl_3.mp3"},
+					{"name": "Pf_3", "soundFile":"miimiline/Klaver_3.mp3"},
+					{"name": "Perc_3", "soundFile":"miimiline/Lkp_3.mp3"},
+					{"name": "Vl_3", "soundFile":"miimiline/Vl_3.mp3"},
+					{"name": "Vlc_3", "soundFile":"miimiline/Vlc_3.mp3"}
+				]
+			},
+			{
+				"name": "Ver4",
+				"tracks": [
+					{"name": "Fl_4", "soundFile":"miimiline/Fl_4.mp3"},
+					{"name": "Cl_4", "soundFile":"miimiline/Cl_4.mp3"},
+					{"name": "Pf_4", "soundFile":"miimiline/Klaver_4.mp3"},
+					{"name": "Perc_4", "soundFile":"miimiline/Lkp_4.mp3"},
+					{"name": "Vl_4", "soundFile":"miimiline/Vl_4.mp3"},
+					{"name": "Vlc_4", "soundFile":"miimiline/Vlc_4.mp3"}
+				]
+			}
+		]
+	},
+
+	{
+		"title": "Sylvano Bussotti -  Sensitivo",
+		"credits": "",
+		"trackGroups": [
+			{
+				"name": "Flute",
+				"tracks": [
+					{"name": "Fl_1", "soundFile":"bussotti/fl1.mp3"},
+					{"name": "Fl_2", "soundFile":"bussotti/fl2.mp3"},
+					{"name": "Fl_3", "soundFile":"bussotti/fl3.mp3"},
+					{"name": "Fl_4", "soundFile":"bussotti/fl4.mp3"}
+				]
+			},
+			{
+				"name": "Clarinet",
+				"tracks": [
+					{"name": "Cl_1", "soundFile":"bussotti/cl1.mp3"},
+					{"name": "Cl_2", "soundFile":"bussotti/cl2.mp3"},
+					{"name": "Cl_3", "soundFile":"bussotti/cl3.mp3"},
+					{"name": "Cl_4", "soundFile":"bussotti/cl4.mp3"}
+				]
+			},
+
+			{
+				"name": "Violin",
+				"tracks": [
+					{"name": "Vl_1", "soundFile":"bussotti/vl1.mp3"},
+					{"name": "Vl_2", "soundFile":"bussotti/vl2.mp3"},
+					{"name": "Vl_3", "soundFile":"bussotti/vl3.mp3"},
+					{"name": "Vl_4", "soundFile":"bussotti/vl4.mp3"}
+				]
+			},
+			{
+				"name": "Violoncello",
+				"tracks": [
+					{"name": "Vlc_1", "soundFile":"bussotti/vlc1.mp3"},
+					{"name": "Vlc_2", "soundFile":"bussotti/vlc2.mp3"},
+					{"name": "Vlc_3", "soundFile":"bussotti/vlc3.mp3"},
+					{"name": "Vlc_4", "soundFile":"bussotti/vlc4.mp3"}
+				]
+			},
+
+			{
+				"name": "Piano",
+				"tracks": [
+					{"name": "Pf_1", "soundFile":"bussotti/pf1.mp3"},
+					{"name": "Pf_2", "soundFile":"bussotti/pf2.mp3"},
+					{"name": "Pf_3", "soundFile":"bussotti/pf3.mp3"},
+					{"name": "Pf_4", "soundFile":"bussotti/pf4.mp3"}
+				]
+			},
+
+			{
+				"name": "Percussion",
+				"tracks": [
+					{"name": "Perc_1", "soundFile":"bussotti/perc1.mp3"},
+					{"name": "Perc_2", "soundFile":"bussotti/perc2.mp3"},
+					{"name": "Perc_3", "soundFile":"bussotti/perc3.mp3"},
+					{"name": "Perc_4", "soundFile":"bussotti/perc4.mp3"}
+				]
+			}
+		]
+	},
+
+	{
+		"title": "Claude Vivier -  Pulauw Devata",
+		"credits": "",
+		"trackGroups": [
+			{
+				"name": "U:",
+				"tracks": [
+					{"name": "Fl", "soundFile":"vivier/fl.mp3"},
+					{"name": "Cl", "soundFile":"vivier/cl.mp3"},
+					{"name": "Vl", "soundFile":"vivier/vl.mp3"},
+					{"name": "Vlc", "soundFile":"vivier/vlc.mp3"},
+					{"name": "Pf", "soundFile":"vivier/pf.mp3"},
+					{"name": "Perc", "soundFile":"vivier/perc.mp3"}
+				]
+			}
+		]
+	}
+
+
+]

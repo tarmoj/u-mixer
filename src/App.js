@@ -16,7 +16,8 @@ import { createTheme } from '@mui/material/styles';
 import ChannelGroup from "./ChannelGroup";
 import * as JSON5 from "json5";
 import packageInfo from '../package.json';
-import {tracks} from "./tracks"
+//import {tracks} from "./tracks"
+import trackInfo from "./tracks.json";
 
 
 const version = packageInfo.version;
@@ -74,9 +75,32 @@ const Control = () => {
 
 function App() {
 
+    const defaultEventText = `[
+// <- this is a comment    
+
+// first is example, change it as you need    
+{   trackName: "Fl_1", // name of the track or group where change will happen
+    when: 10 , //time as string perhaps "0:30"?
+    property: "volume", //"volume|pan|mute|solo",
+    value: -24, // -36..6 for volume, -1 (left)..1 (right) for pan, true/false for solor or mute
+    rampTime: 1, // during how long time in seconds the change will take place (for volume and pan)
+},
+
+{   trackName: "Fl_1", // empty template
+     when: 12 , 
+     property: "volume",
+     value: 0,
+     rampTime: 0.1,     
+},
+    
+]`;
+
     const [counter, setCounter] = useState(0); // somehow Tone.loaded fires at start and then after all clips are loaded
     const [events, setEvents] = useState([]);
     const [eventDialogOpen, setEventDialogOpen] = useState(false);
+    const [eventText, setEventText] = useState(defaultEventText);
+    const [tracks, setTracks] = useState([]);
+    const [pieceIndex, setPieceIndex] = useState(2); // index to the selected piece in tracks.json
 
 //test
     Tone.loaded().then(() => {
@@ -105,27 +129,9 @@ function App() {
 
 
 
-    const defaultEventText = `[
-// <- this is a comment    
 
-// first is example, change it as you need    
-{   trackName: "Fl_1", // name of the track or group where change will happen
-    when: 10 , //time as string perhaps "0:30"?
-    property: "volume", //"volume|pan|mute|solo",
-    value: -24, // -36..6 for volume, -1 (left)..1 (right) for pan, true/false for solor or mute
-    rampTime: 1, // during how long time in seconds the change will take place (for volume and pan)
-},
 
-{   trackName: "Fl_1", // empty template
-     when: 12 , 
-     property: "volume",
-     value: 0,
-     rampTime: 0.1,     
-},
-    
-]`;
 
-    const [eventText, setEventText] = useState(defaultEventText);
 
 
 
@@ -206,6 +212,11 @@ function App() {
         setUserTouched(true);
     }
 
+    const loadResources = (pieceIndex=0) => {
+
+
+    }
+
     // TODO: Backdrop should be open until !userTouched
     return (
         <ThemeProvider theme={darkTheme}>
@@ -214,7 +225,6 @@ function App() {
                 <Backdrop
                     sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
                     open={  counter<1 }
-                    // onClick={handleClose}
                 >
                     { userTouched ? <CircularProgress color="inherit" /> : <Button variant={"contained"} onClick={()=>resumeAudio()}>Start</Button>  }
 
@@ -239,27 +249,15 @@ function App() {
                             </Grid>
                         </Grid>
 
-                        <Grid item container direction={"row"} spacing={1}>
-                            <Grid item>
-                                <ChannelGroup name={"Fl"} tracks={tracks.slice(0,6)} events={events} />
-                            </Grid>
-                            <Grid item>
 
-                                <ChannelGroup name={"Cl"} tracks={tracks.slice(6,12)} events={events} />
+                        <Grid item container direction={"row"} spacing={1} alignItems={"center"} justifyContent={"center"}>
+                            { trackInfo[pieceIndex].trackGroups.map( (tg, index) =>
+                                <Grid item  key={"channelGroupItem"+index} xs={6}>
+                                    <ChannelGroup key={"ChannelGroup"+index} name={tg.name} tracks={tg.tracks} events={events} />
 
-                            </Grid>
-                        </Grid>
-                        <Grid item container direction={"row"} spacing={1}>
-                            <Grid item>
+                                </Grid>
 
-                                <ChannelGroup name={"Vl"} tracks={tracks.slice(12,18)} events={events} />
-
-                            </Grid>
-                            <Grid item>
-
-                                <ChannelGroup name={"Vlc"} tracks={tracks.slice(18,24)} events={events} />
-
-                            </Grid>
+                            ) }
                         </Grid>
                     </Grid>
                 </div>
