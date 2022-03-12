@@ -43,7 +43,7 @@ const ChannelControl = ({name, soundFile, events, masterChannel, soloChange}) =>
                 setPlayer(player);
             }
 
-    }, []);
+    }, [soundFile]);
 
 
     // masterChannel messes up panning and solo...

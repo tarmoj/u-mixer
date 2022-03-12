@@ -8,8 +8,8 @@ import {
     Dialog, DialogActions, DialogContent, DialogContentText,
     DialogTitle,
     Grid,
-    LinearProgress,
-    Paper, TextareaAutosize,
+    LinearProgress, MenuItem,
+    Paper, Select, TextareaAutosize,
     ThemeProvider
 } from "@mui/material";
 import { createTheme } from '@mui/material/styles';
@@ -23,55 +23,18 @@ import trackInfo from "./tracks.json";
 const version = packageInfo.version;
 
 
-const Control = () => {
-
+const TimeLabel = () => {
     const [time, setTime] = useState(0);
 
-    const videoRef= useRef(); // does it work here?
+    Tone.Transport.scheduleRepeat(() => {
+        setTime(Math.floor(Tone.Transport.seconds));
+    }, 1);
+
+    return <span>Time: {Math.floor(time/60)} : {time%60}</span>
+
+}
 
 
-    const start = () => {
-        console.log("Start");
-        //Tone.Transport.stop("+0.01"); // strange tryout kind of works
-        Tone.Transport.start("+0.1"); // is this necessary
-        Tone.Transport.scheduleRepeat(() => {
-            setTime(Math.floor(Tone.Transport.seconds));
-        }, 1);
-        console.log("Video status: ", videoRef.current.paused);
-        videoRef.current.play();
-    }
-
-    const pause = () => {
-        Tone.Transport.pause("+0.01");
-        videoRef.current.pause();
-    }
-
-    const stop = () => {
-        console.log("Stop");
-        //Tone.Transport.seconds = 0;
-        Tone.Transport.stop("+0.01");
-        setTime(0);
-        videoRef.current.pause();
-        videoRef.current.currentTime = 0;
-    }
-
-    const clipDuration = 310;
-
-    return (
-        <div>
-            <video className={"videoFrame"} width={320} height={240} ref={videoRef}>
-                <source src={process.env.PUBLIC_URL + "/miimiline-small.mp4"}/>
-                Your browser does not support the video tag.
-            </video>
-            <Button aria-label={"Play"} onClick={start} >Play</Button>
-            <Button aria-label={"Pause"} onClick={pause} >Pause</Button>
-            <Button aria-label={"Stop"} onClick={stop}>Stop</Button>
-            Time: {Math.floor(time/60)} : {time%60}
-            <LinearProgress sx={{width:60}}  variant="determinate" value={100*time/clipDuration} />
-
-        </div>
-    );
-};
 
 function App() {
 
@@ -101,10 +64,41 @@ function App() {
     const [eventText, setEventText] = useState(defaultEventText);
     const [tracks, setTracks] = useState([]);
     const [pieceIndex, setPieceIndex] = useState(2); // index to the selected piece in tracks.json
+    const [time, setTime] = useState(0);
+    const [clipDuration, setClipDuration] = useState(300);
+
+    const videoRef= useRef();
+
+
+    const start = () => {
+        console.log("Start");
+        //Tone.Transport.stop("+0.01"); // strange tryout kind of works
+        Tone.Transport.start("+0.1"); // is this necessary
+        //Tone.Transport.scheduleRepeat(() => {
+        //    setTime(Math.floor(Tone.Transport.seconds));
+        // }, 1);
+        console.log("Video status: ", videoRef.current.paused);
+        videoRef.current.play();
+    }
+
+    const pause = () => {
+        Tone.Transport.pause("+0.01");
+        videoRef.current.pause();
+    }
+
+    const stop = () => {
+        console.log("Stop");
+        //Tone.Transport.seconds = 0;
+        Tone.Transport.stop("+0.01");
+        setTime(0);
+        videoRef.current.pause();
+        videoRef.current.currentTime = 0;
+    }
+
 
 //test
     Tone.loaded().then(() => {
-        if (counter<1) {
+        if (counter<2) {
             setCounter(counter+1);
             console.log("Loaded counter: ", counter);
         } else {
@@ -212,55 +206,87 @@ function App() {
         setUserTouched(true);
     }
 
-    const loadResources = (pieceIndex=0) => {
-
+    const loadResources = (event) => {
+        const index = event.target.value;
+        console.log("Should set  piece to: ", index, trackInfo[index].title);
+        setCounter(0);
+        setPieceIndex(index); // does it retrigger making new players?
 
     }
+    // üles:
+    const selectRef = useRef();
 
     // TODO: Backdrop should be open until !userTouched
     return (
         <ThemeProvider theme={darkTheme}>
 
             <Paper className={"App"}>
-                <Backdrop
-                    sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-                    open={  counter<1 }
-                >
-                    { userTouched ? <CircularProgress color="inherit" /> : <Button variant={"contained"} onClick={()=>resumeAudio()}>Start</Button>  }
+                { !userTouched ?
+                    <Button variant={"contained"} onClick={()=>resumeAudio() }>Enable audio</Button>
+                    :
+                    <>
+                        <Backdrop
+                            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                            open={  counter<2 }
+                        >
+                            <CircularProgress color="inherit" />
 
-                </Backdrop>
-                {createEventDialog()}
-                <h1>
-                    U: mixer test
-                </h1>
-                <small>v {version}</small>
-                <div >
+                        </Backdrop>
+                        {createEventDialog()}
+                        <video  className={"videoFrame"} width={320} height={240} ref={videoRef}>
+                            <source src={process.env.PUBLIC_URL + "/miimiline-small.mp4"}/>
+                            Your browser does not support the video tag.
+                        </video>
+                        <h1>
+                            U: mixer test
+                        </h1>
+                        <small>v {version}</small>
+                        <div >
 
-                    <Grid container direction={"column"} spacing={1}>
-                        <Grid item container direction={"row"} spacing={1} >
-                            <Grid item>
-                                <Button aria-label={"Define events"} onClick={()=>setEventDialogOpen(true)} >Define events</Button>
-                            </Grid>
-                            <Grid item>
-                                <Button aria-label={"Event"} onClick={()=>addRandomEvents("Fl_1")} >Random event</Button>
-                            </Grid>
-                            <Grid item>
-                                <Control />
-                            </Grid>
-                        </Grid>
-
-
-                        <Grid item container direction={"row"} spacing={1} alignItems={"center"} justifyContent={"center"}>
-                            { trackInfo[pieceIndex].trackGroups.map( (tg, index) =>
-                                <Grid item  key={"channelGroupItem"+index} xs={6}>
-                                    <ChannelGroup key={"ChannelGroup"+index} name={tg.name} tracks={tg.tracks} events={events} />
-
+                            <Grid container direction={"column"} spacing={1}>
+                                <Grid item>
+                                    <Select  ref={selectRef} value={pieceIndex} onChange={loadResources}>
+                                        { trackInfo.map( (piece, index) => <MenuItem key={"pieceMenu"+index} value={index}>{piece.title}</MenuItem> )}
+                                    </Select>
+                                </Grid>
+                                <Grid item container direction={"row"} spacing={1} >
+                                    <Grid item>
+                                        <Button aria-label={"Define events"} onClick={()=>setEventDialogOpen(true)} >Define events</Button>
+                                    </Grid>
+                                    <Grid item>
+                                        <Button aria-label={"Event"} onClick={()=>addRandomEvents("Fl_1")} >Random event</Button>
+                                    </Grid>
+                                    <Grid item>
+                                        <Button aria-label={"Play"} onClick={start} >Play</Button>
+                                        <LinearProgress sx={{width:60}}  variant="determinate" value={100*time/clipDuration} />
+                                    </Grid>
+                                    <Grid item>
+                                        <Button aria-label={"Pause"} onClick={pause} >Pause</Button>
+                                    </Grid>
+                                    <Grid item>
+                                        <Button aria-label={"Stop"} onClick={stop}>Stop</Button>
+                                    </Grid>
+                                    <Grid item>
+                                        <TimeLabel />
+                                    </Grid>
                                 </Grid>
 
-                            ) }
-                        </Grid>
-                    </Grid>
-                </div>
+
+                                <Grid item container direction={"row"} spacing={1} alignItems={"center"} justifyContent={"center"}>
+                                    { trackInfo[pieceIndex].trackGroups.map( (tg, index) =>
+                                        <Grid item  key={"channelGroupItem"+index} xs={6}>
+                                            <ChannelGroup key={"ChannelGroup"+index} name={tg.name} tracks={tg.tracks} events={events} />
+
+                                        </Grid>
+
+                                    ) }
+                                </Grid>
+                            </Grid>
+
+                        </div>
+                    </>
+                }
+
             </Paper>
         </ThemeProvider>
     );
