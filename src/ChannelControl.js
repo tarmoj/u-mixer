@@ -26,7 +26,8 @@ const ChannelControl = ({name, soundFile, events, masterChannel, soloChange}) =>
         console.log("player:", player);
         const source = process.env.PUBLIC_URL + "/sounds/" + soundFile;
         let newPlayer = null;
-        if (player===null) {
+
+        if (player === null) {
 
             const channel = new Tone.Channel({ channelCount:2, volume:-60});
             channel.connect(Tone.Destination);
