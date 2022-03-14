@@ -21,27 +21,37 @@ const ChannelControl = ({name, soundFile, events, masterChannel, soloChange}) =>
 
     useEffect(() => {
 
-            if (player===null) {
-                console.log("Create player for: ", soundFile);
 
-                const source = process.env.PUBLIC_URL + "/sounds/" + soundFile;
-                const channel = new Tone.Channel({ channelCount:2, volume:-60});
-                channel.connect(Tone.Destination);
+        console.log("Create player for: ", soundFile);
+        console.log("player:", player);
+        const source = process.env.PUBLIC_URL + "/sounds/" + soundFile;
+        let newPlayer = null;
+        if (player===null) {
+
+            const channel = new Tone.Channel({ channelCount:2, volume:-60});
+            channel.connect(Tone.Destination);
+            newPlayer = new Tone.Player({
+                url: source,
+                loop: false,
+                onload: () => {
+                    console.log("Local onload -  loaded", name, soundFile);
+                    setLoaded(true);
+                }
+            }).sync().start(0);
+            newPlayer.connect(channel);
+
+            setChannel(channel);
+            setPlayer(newPlayer);
+        }  else {
+            console.log("Dispose player");
+            player.dispose();
+            player.load(source).then(() => {
+                console.log("New file onload -  loaded", name, soundFile);
+                setLoaded(true);
+         } )
+        }
 
 
-                const player = new Tone.Player({
-                    url: source,
-                    loop: false,
-                    onload: () => {
-                        console.log("Local onload -  loaded", name, soundFile);
-                        setLoaded(true);
-                    }
-                }).sync().start(0);
-                player.connect(channel);
-
-                setChannel(channel);
-                setPlayer(player);
-            }
 
     }, [soundFile]);
 
@@ -65,7 +75,7 @@ const ChannelControl = ({name, soundFile, events, masterChannel, soloChange}) =>
 
             for (let event of events) {
                 console.log(event);
-                Tone.Transport.scheduleOnce( (time)=> {
+                Tone.Transport.scheduleOnce( ()=> {
                     if (event.property === "volume") {
                         handleVolume(event.value, event.rampTime);
                     } else if (event.property === "pan") {
@@ -113,7 +123,7 @@ const ChannelControl = ({name, soundFile, events, masterChannel, soloChange}) =>
 
     return (
         <Paper elevation={4}>
-            <Grid item container direction={"column"} justifyContent={"center"} rowSpacing={1}>
+            <Grid item container direction={"column"} justifyContent={"center"} rowSpacing={1} >
                 <Grid item>
                     { loaded ? name : "Loading"}
                 </Grid>

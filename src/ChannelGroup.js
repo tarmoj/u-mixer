@@ -1,5 +1,5 @@
 import * as Tone from "tone"
-import {useState, useEffect, useRef} from "react";
+import {useState, useEffect} from "react";
 import {Grid, Paper, Slider, ToggleButton} from "@mui/material";
 import ChannelControl from "./ChannelControl";
 

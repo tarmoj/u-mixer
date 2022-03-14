@@ -211,6 +211,8 @@ function App() {
         console.log("Should set  piece to: ", index, trackInfo[index].title);
         setCounter(0);
         setPieceIndex(index); // does it retrigger making new players?
+        //TODO: setTracks to all tracks of the trackGroups
+        setClipDuration(trackInfo[index].duration);
 
     }
     // üles:
