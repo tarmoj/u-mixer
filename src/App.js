@@ -207,6 +207,13 @@ function App() {
     }
 
     const loadResources = (event) => {
+        // test
+        //Tone.getContext().close();
+        //Tone.setContext(new AudioContext()) ;
+        //Tone.start().then( () => { console.log("Now started") } );
+        //Tone.dispose();
+        //Tone.getContext().dispose();
+
         const index = event.target.value;
         console.log("Should set  piece to: ", index, trackInfo[index].title);
         setCounter(0);

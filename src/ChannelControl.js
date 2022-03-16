@@ -25,13 +25,14 @@ const ChannelControl = ({name, soundFile, events, masterChannel, soloChange}) =>
         console.log("Create player for: ", soundFile);
         console.log("player:", player);
         const source = process.env.PUBLIC_URL + "/sounds/" + soundFile;
-        let newPlayer = null;
+        //let newPlayer = null;
+
 
         if (player === null) {
 
             const channel = new Tone.Channel({ channelCount:2, volume:-60});
             channel.connect(Tone.Destination);
-            newPlayer = new Tone.Player({
+            const newPlayer = new Tone.Player({
                 url: source,
                 loop: false,
                 onload: () => {
@@ -43,14 +44,14 @@ const ChannelControl = ({name, soundFile, events, masterChannel, soloChange}) =>
 
             setChannel(channel);
             setPlayer(newPlayer);
-        }  else {
+        } /* else {
             console.log("Dispose player");
             player.dispose();
             player.load(source).then(() => {
                 console.log("New file onload -  loaded", name, soundFile);
                 setLoaded(true);
          } )
-        }
+        } */
 
 
 
