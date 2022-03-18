@@ -7,67 +7,41 @@ import {Paper, Slider, ToggleButton, Grid} from "@mui/material";
 // see example: https://github.com/Tonejs/Tone.js/blob/dev/examples/mixer.html
 
 
-const ChannelControl = ({name, soundFile, events, masterChannel, soloChange}) => { // props: name, source,  event: {property, value, rampTime}
+const ChannelControl = ({track, events, masterChannel, soloChange}) => { // props: name, source,  event: {property, value, rampTime}
 
+    const name = track.name;
+    const channel = track.channel;
 
-    const [player, setPlayer] = useState(null);
-    const [channel, setChannel] = useState(null);
+    // const [player, setPlayer] = useState(null);
+    // const [channel, setChannel] = useState(null);
     const [soloed, setSoloed] = useState(false);
     const [muted, setMuted] = useState(false);
-    const [loaded, setLoaded] = useState(false);
+    //const [loaded, setLoaded] = useState(false);
+    // track.player.loaded
     const [volume, setVolume] = useState(-60);
     const [pan, setPan] = useState(0);
 
+    // const loaded = track.player.loaded;
 
-    useEffect(() => {
+    useEffect(() => { // kind of init function
+        // if soundFile changed set the default values:
+        handleVolume(-60);
+        handlePan(0);
+        handleMuted(false);
+        handleSolo(false);
+    }, [track.soundFile]);
 
-
-        console.log("Create player for: ", soundFile);
-        console.log("player:", player);
-        const source = process.env.PUBLIC_URL + "/sounds/" + soundFile;
-        //let newPlayer = null;
-
-
-        if (player === null) {
-
-            const channel = new Tone.Channel({ channelCount:2, volume:-60});
-            channel.connect(Tone.Destination);
-            const newPlayer = new Tone.Player({
-                url: source,
-                loop: false,
-                onload: () => {
-                    console.log("Local onload -  loaded", name, soundFile);
-                    setLoaded(true);
+    /*
+        // masterChannel messes up panning and solo...
+        useEffect( () => {
+                if (masterChannel) {
+                    //console.log("connect to masteChannel", name, masterChannel);
+                    channel.disconnect(Tone.getDestination());
+                    channel.connect(masterChannel);
                 }
-            }).sync().start(0);
-            newPlayer.connect(channel);
+            }, [masterChannel]
 
-            setChannel(channel);
-            setPlayer(newPlayer);
-        } /* else {
-            console.log("Dispose player");
-            player.dispose();
-            player.load(source).then(() => {
-                console.log("New file onload -  loaded", name, soundFile);
-                setLoaded(true);
-         } )
-        } */
-
-
-
-    }, [soundFile]);
-
-
-    // masterChannel messes up panning and solo...
-    useEffect( () => {
-            if (masterChannel) {
-                //console.log("connect to masteChannel", name, masterChannel);
-                channel.disconnect(Tone.getDestination());
-                channel.connect(masterChannel);
-            }
-        }, [masterChannel]
-
-    );
+        );*/
 
 
     useEffect( () => {
@@ -127,7 +101,7 @@ const ChannelControl = ({name, soundFile, events, masterChannel, soloChange}) =>
         <Paper elevation={4}>
             <Grid item container direction={"column"} justifyContent={"center"} rowSpacing={1} >
                 <Grid item>
-                    { loaded ? name : "Loading"}
+                    { track.player.loaded ? name : "Loading"}
                 </Grid>
                 <Grid item>
                     <Slider  orientation={"vertical"} sx={{height: 70 }}   value={volume} min={-36} max={6} onChange={(e) => handleVolume(e.target.value)} />

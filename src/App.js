@@ -1,6 +1,6 @@
 import './App.css';
 import * as Tone from "tone"
-import {useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {
     Backdrop,
     Button,
@@ -17,7 +17,7 @@ import ChannelGroup from "./ChannelGroup";
 import * as JSON5 from "json5";
 import packageInfo from '../package.json';
 //import {tracks} from "./tracks"
-import trackInfo from "./tracks.json";
+import trackData from "./tracks.json";
 
 
 const version = packageInfo.version;
@@ -62,12 +62,78 @@ function App() {
     const [events, setEvents] = useState([]);
     const [eventDialogOpen, setEventDialogOpen] = useState(false);
     const [eventText, setEventText] = useState(defaultEventText);
-    const [tracks, setTracks] = useState([]);
+    const [tracks, setTracks] = useState(null);
     const [pieceIndex, setPieceIndex] = useState(2); // index to the selected piece in tracks.json
+    const [trackInfo, setTrackInfo] = useState(trackData[pieceIndex]); // array of trackinfo by groups, where channels and player are added
+
     const [time, setTime] = useState(0);
     const [clipDuration, setClipDuration] = useState(300);
 
     const videoRef= useRef();
+
+
+    const createChannel = () => {
+        const channel = new Tone.Channel({ channelCount:2, volume:-90});
+        //channel.connect(Tone.Destination); // not sure if here or in the component
+        return channel;
+    }
+
+    const createPlayer = (soundFile) => {
+        const source = process.env.PUBLIC_URL + "/sounds/" + soundFile;
+        const newPlayer = new Tone.Player({
+            url: source,
+            loop: false,
+            onload: () => {
+                console.log("Local onload -  loaded", soundFile);
+            }
+        }).sync().start(0);
+        //newPlayer.connect(channel);
+        return newPlayer;
+    }
+
+    const prepareTrackInfo  = (index) => { // piece index in trackData (json)
+
+        if (trackInfo) {
+            const currentTrackInfo = trackInfo;
+            console.log("Dispose current channels and players"); // does it free the memory?
+            for (let group of currentTrackInfo.trackGroups) {
+                for (let track of group.tracks) {
+                    if (track.channel) track.channel.dispose();
+                    if (track.player) track.player.dispose();
+                }
+                if (group.channel) group.channel.dispose();
+            }
+        }
+
+
+        const newTrackInfo = trackData[index];
+        for (let group of newTrackInfo.trackGroups) {
+            group.channel = createChannel(); // add Tone.Channel
+            group.channel.volume.rampTo(0, 0.01); // set the value
+            group.channel.toDestination();
+            for (let track of group.tracks) {
+                track.channel = createChannel();
+                track.channel.connect(group.channel);
+                track.player = createPlayer(track.soundFile);
+                track.player.connect(track.channel);
+            }
+        }
+        setTrackInfo(newTrackInfo);
+        setClipDuration(newTrackInfo.duration);
+        console.log("New pieces duration is: ", newTrackInfo.duration);
+    }
+
+    const loadResources = (event) => {
+        const index = event.target.value;
+        console.log("Should set  piece to: ", index, trackData[index].title);
+        setCounter(0);
+        stop(); // for any case
+        setTimeout( ()=>{ prepareTrackInfo(index);
+            setPieceIndex(index);
+        }, 200); // give some time to stop
+
+    }
+
 
 
     const start = () => {
@@ -77,13 +143,12 @@ function App() {
         //Tone.Transport.scheduleRepeat(() => {
         //    setTime(Math.floor(Tone.Transport.seconds));
         // }, 1);
-        console.log("Video status: ", videoRef.current.paused);
-        videoRef.current.play();
+        if (videoRef.current) videoRef.current.play();
     }
 
     const pause = () => {
         Tone.Transport.pause("+0.01");
-        videoRef.current.pause();
+        if (videoRef.current)  videoRef.current.pause();
     }
 
     const stop = () => {
@@ -91,8 +156,10 @@ function App() {
         //Tone.Transport.seconds = 0;
         Tone.Transport.stop("+0.01");
         setTime(0);
-        videoRef.current.pause();
-        videoRef.current.currentTime = 0;
+        if (videoRef.current) {
+            videoRef.current.pause();
+            videoRef.current.currentTime = 0;
+        }
     }
 
 
@@ -120,14 +187,6 @@ function App() {
     const getRandomElement = (array) => {
         return array[Math.floor(Math.random()*array.length)];
     }
-
-
-
-
-
-
-
-
 
 
     const addRandomEvents = () => { //  , when="+0.1"?
@@ -204,24 +263,10 @@ function App() {
         Tone.getContext().resume();
         console.log("Audio resume");
         setUserTouched(true);
+        prepareTrackInfo(pieceIndex); // is this necessary here?
     }
 
-    const loadResources = (event) => {
-        // test
-        //Tone.getContext().close();
-        //Tone.setContext(new AudioContext()) ;
-        //Tone.start().then( () => { console.log("Now started") } );
-        //Tone.dispose();
-        //Tone.getContext().dispose();
 
-        const index = event.target.value;
-        console.log("Should set  piece to: ", index, trackInfo[index].title);
-        setCounter(0);
-        setPieceIndex(index); // does it retrigger making new players?
-        //TODO: setTracks to all tracks of the trackGroups
-        setClipDuration(trackInfo[index].duration);
-
-    }
     // üles:
     const selectRef = useRef();
 
@@ -242,10 +287,13 @@ function App() {
 
                         </Backdrop>
                         {createEventDialog()}
-                        <video  className={"videoFrame"} width={320} height={240} ref={videoRef}>
+                        {  // show only video by Miimiline
+                            pieceIndex===0 && <video  className={"videoFrame"} width={320} height={240} ref={videoRef}>
                             <source src={process.env.PUBLIC_URL + "/miimiline-small.mp4"}/>
                             Your browser does not support the video tag.
                         </video>
+                        }
+
                         <h1>
                             U: mixer test
                         </h1>
@@ -255,7 +303,7 @@ function App() {
                             <Grid container direction={"column"} spacing={1}>
                                 <Grid item>
                                     <Select  ref={selectRef} value={pieceIndex} onChange={loadResources}>
-                                        { trackInfo.map( (piece, index) => <MenuItem key={"pieceMenu"+index} value={index}>{piece.title}</MenuItem> )}
+                                        { trackData.map( (piece, index) => <MenuItem key={"pieceMenu"+index} value={index}>{piece.title}</MenuItem> )}
                                     </Select>
                                 </Grid>
                                 <Grid item container direction={"row"} spacing={1} >
@@ -267,7 +315,7 @@ function App() {
                                     </Grid>
                                     <Grid item>
                                         <Button aria-label={"Play"} onClick={start} >Play</Button>
-                                        <LinearProgress sx={{width:60}}  variant="determinate" value={100*time/clipDuration} />
+                                        <LinearProgress sx={{width:60}}  variant="determinate" value={100*time/trackInfo.duration} />
                                     </Grid>
                                     <Grid item>
                                         <Button aria-label={"Pause"} onClick={pause} >Pause</Button>
@@ -282,13 +330,17 @@ function App() {
 
 
                                 <Grid item container direction={"row"} spacing={1} alignItems={"center"} justifyContent={"center"}>
-                                    { trackInfo[pieceIndex].trackGroups.map( (tg, index) =>
+
+                                    {
+                                        trackInfo.trackGroups.map( (tg, index) =>
                                         <Grid item  key={"channelGroupItem"+index} xs={6}>
-                                            <ChannelGroup key={"ChannelGroup"+index} name={tg.name} tracks={tg.tracks} events={events} />
+
+                                            <ChannelGroup key={"ChannelGroup"+index} name={tg.name} tracks={tg.tracks} events={events} channel={tg.channel} />
 
                                         </Grid>
 
                                     ) }
+
                                 </Grid>
                             </Grid>
 

@@ -6,21 +6,22 @@ import ChannelControl from "./ChannelControl";
 
 
 
-const ChannelGroup = ({name, tracks, events }) => {
+const ChannelGroup = ({name, tracks, events, channel }) => {
 
     const [volume, setVolume] = useState(0);
     //const [pan, setPan] = useState(0);
-    const [channel, setChannel] = useState(null);
+    //const [channel, setChannel] = useState(null);
     const [soloed, setSoloed] = useState(false);
     const [muted, setMuted] = useState(false);
     const [trackSolos, setTrackSolos] = useState(new Array(10)); // define 10 by default
 
+/*
     useEffect(() => {
-        console.log("Setup masterChannel: ", name);
-        const channel = new Tone.Channel({ channelCount:2}).toDestination();
+        //console.log("Setup masterChannel: ", name);
+        //const channel = new Tone.Channel({ channelCount:2}).toDestination();
         setChannel(channel);
     }, []);
-
+*/
     useEffect( () => {
             const groupEvents = getGroupEventList();
             if (!groupEvents) return;
@@ -120,9 +121,10 @@ const ChannelGroup = ({name, tracks, events }) => {
                     <Grid item container direction={"row"} spacing={1}>
                         { tracks.map( (track, index) =>
                             <Grid item key={index}>
-                                <ChannelControl name={track.name} soundFile={track.soundFile} events={getTrackEventList(track.name)} masterChannel={channel} soloChange={handleChildSoloChange}/>
+                                <ChannelControl track={track} events={getTrackEventList(track.name)} masterChannel={channel} soloChange={handleChildSoloChange}/>
                             </Grid>
-                        )}
+                        )
+                        }
                     </Grid>
 
                 </Grid>
