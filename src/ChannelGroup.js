@@ -94,7 +94,7 @@ const ChannelGroup = ({name, tracks, events, channel }) => {
         const index = tracks.findIndex((t) => t.name === trackName );
         const currentSolos = trackSolos; // no deep copy here since we don'y want re-rednder
         currentSolos[index] = solo;
-        console.log("Solos array:", currentSolos);
+        //console.log("Solos array:", currentSolos);
         if (currentSolos.some( (item) => item===true )) {
             handleSolo(true);
         } else {
@@ -121,7 +121,7 @@ const ChannelGroup = ({name, tracks, events, channel }) => {
                     <Grid item container direction={"row"} spacing={1}>
                         { tracks.map( (track, index) =>
                             <Grid item key={index}>
-                                <ChannelControl track={track} events={getTrackEventList(track.name)} masterChannel={channel} soloChange={handleChildSoloChange}/>
+                                <ChannelControl track={track} events={getTrackEventList(track.name)} soloChange={handleChildSoloChange} />
                             </Grid>
                         )
                         }

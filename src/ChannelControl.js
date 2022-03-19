@@ -7,17 +7,14 @@ import {Paper, Slider, ToggleButton, Grid} from "@mui/material";
 // see example: https://github.com/Tonejs/Tone.js/blob/dev/examples/mixer.html
 
 
-const ChannelControl = ({track, events, masterChannel, soloChange}) => { // props: name, source,  event: {property, value, rampTime}
+const ChannelControl = ({track, events, soloChange}) => { // props: name, source,  event: {property, value, rampTime}
 
     const name = track.name;
     const channel = track.channel;
 
-    // const [player, setPlayer] = useState(null);
-    // const [channel, setChannel] = useState(null);
     const [soloed, setSoloed] = useState(false);
     const [muted, setMuted] = useState(false);
-    //const [loaded, setLoaded] = useState(false);
-    // track.player.loaded
+    const [loaded, setLoaded] = useState(false);
     const [volume, setVolume] = useState(-60);
     const [pan, setPan] = useState(0);
 
@@ -31,17 +28,11 @@ const ChannelControl = ({track, events, masterChannel, soloChange}) => { // prop
         handleSolo(false);
     }, [track.soundFile]);
 
-    /*
-        // masterChannel messes up panning and solo...
-        useEffect( () => {
-                if (masterChannel) {
-                    //console.log("connect to masteChannel", name, masterChannel);
-                    channel.disconnect(Tone.getDestination());
-                    channel.connect(masterChannel);
-                }
-            }, [masterChannel]
+    useEffect(()=> {
+        const buffer = track ? track.player.buffer : null;
+        if (buffer) buffer.onload = () => setLoaded(true)  ;
+    }, [track] );
 
-        );*/
 
 
     useEffect( () => {
@@ -101,7 +92,7 @@ const ChannelControl = ({track, events, masterChannel, soloChange}) => { // prop
         <Paper elevation={4}>
             <Grid item container direction={"column"} justifyContent={"center"} rowSpacing={1} >
                 <Grid item>
-                    { track.player.loaded ? name : "Loading"}
+                    { loaded ? name : "Loading"}
                 </Grid>
                 <Grid item>
                     <Slider  orientation={"vertical"} sx={{height: 70 }}   value={volume} min={-36} max={6} onChange={(e) => handleVolume(e.target.value)} />

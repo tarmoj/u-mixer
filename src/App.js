@@ -83,9 +83,9 @@ function App() {
         const newPlayer = new Tone.Player({
             url: source,
             loop: false,
-            onload: () => {
-                console.log("Local onload -  loaded", soundFile);
-            }
+            // onload: () => {
+            //     console.log("Local onload -  loaded", soundFile);
+            // }
         }).sync().start(0);
         //newPlayer.connect(channel);
         return newPlayer;
@@ -266,6 +266,7 @@ function App() {
         prepareTrackInfo(pieceIndex); // is this necessary here?
     }
 
+    const columnsPerGroup = (pieceIndex===0) ? 6 : (pieceIndex===1) ? 4 : 12;
 
     // üles:
     const selectRef = useRef();
@@ -276,7 +277,12 @@ function App() {
 
             <Paper className={"App"}>
                 { !userTouched ?
-                    <Button variant={"contained"} onClick={()=>resumeAudio() }>Enable audio</Button>
+                    <Backdrop
+                        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                        open={  !userTouched }
+                        >
+                        <Button  variant={"contained"} onClick={()=>resumeAudio() }>Enable audio</Button>
+                    </Backdrop>
                     :
                     <>
                         <Backdrop
@@ -300,7 +306,7 @@ function App() {
                         <small>v {version}</small>
                         <div >
 
-                            <Grid container direction={"column"} spacing={1}>
+                            <Grid container direction={"column"} spacing={1} sx={{maxWidth:980}} >
                                 <Grid item>
                                     <Select  ref={selectRef} value={pieceIndex} onChange={loadResources}>
                                         { trackData.map( (piece, index) => <MenuItem key={"pieceMenu"+index} value={index}>{piece.title}</MenuItem> )}
@@ -329,11 +335,11 @@ function App() {
                                 </Grid>
 
 
-                                <Grid item container direction={"row"} spacing={1} alignItems={"center"} justifyContent={"center"}>
+                                <Grid item container direction={"row"} spacing={1} alignItems={"center"} justifyContent={"center"} >
 
                                     {
                                         trackInfo.trackGroups.map( (tg, index) =>
-                                        <Grid item  key={"channelGroupItem"+index} xs={6}>
+                                        <Grid item  key={"channelGroupItem"+index} xs={columnsPerGroup}>
 
                                             <ChannelGroup key={"ChannelGroup"+index} name={tg.name} tracks={tg.tracks} events={events} channel={tg.channel} />
 
