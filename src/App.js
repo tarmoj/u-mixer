@@ -93,6 +93,8 @@ function App() {
 
     const prepareTrackInfo  = (index) => { // piece index in trackData (json)
 
+        setCounter(0); // to activate the bacdrop loader progress
+
         if (trackInfo) {
             const currentTrackInfo = trackInfo;
             console.log("Dispose current channels and players"); // does it free the memory?
@@ -126,9 +128,9 @@ function App() {
     const loadResources = (event) => {
         const index = event.target.value;
         console.log("Should set  piece to: ", index, trackData[index].title);
-        setCounter(0);
         stop(); // for any case
-        setTimeout( ()=>{ prepareTrackInfo(index);
+        setTimeout( ()=>{
+            prepareTrackInfo(index);
             setPieceIndex(index);
         }, 200); // give some time to stop
 
@@ -153,7 +155,6 @@ function App() {
 
     const stop = () => {
         console.log("Stop");
-        //Tone.Transport.seconds = 0;
         Tone.Transport.stop("+0.01");
         setTime(0);
         if (videoRef.current) {
@@ -276,12 +277,16 @@ function App() {
         <ThemeProvider theme={darkTheme}>
 
             <Paper className={"App"}>
+                <h1>
+                    U: mixer test
+                </h1>
+                <small>v {version}</small>
                 { !userTouched ?
                     <Backdrop
                         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
                         open={  !userTouched }
                         >
-                        <Button  variant={"contained"} onClick={()=>resumeAudio() }>Enable audio</Button>
+                        <Button  variant={"contained"} onClick={()=>resumeAudio() }>Start and enable audio</Button>
                     </Backdrop>
                     :
                     <>
@@ -300,10 +305,7 @@ function App() {
                         </video>
                         }
 
-                        <h1>
-                            U: mixer test
-                        </h1>
-                        <small>v {version}</small>
+
                         <div >
 
                             <Grid container direction={"column"} spacing={1} sx={{maxWidth:980}} >
