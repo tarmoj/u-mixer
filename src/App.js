@@ -1,6 +1,6 @@
 import './App.css';
 import * as Tone from "tone"
-import {useEffect, useRef, useState} from "react";
+import {useRef, useState} from "react";
 import {
     Backdrop,
     Button,
@@ -16,7 +16,6 @@ import { createTheme } from '@mui/material/styles';
 import ChannelGroup from "./ChannelGroup";
 import * as JSON5 from "json5";
 import packageInfo from '../package.json';
-//import {tracks} from "./tracks"
 import trackData from "./tracks.json";
 
 
@@ -70,6 +69,8 @@ function App() {
     const [clipDuration, setClipDuration] = useState(300);
 
     const videoRef= useRef();
+    const selectRef = useRef();
+
 
 
     const createChannel = () => {
@@ -140,11 +141,13 @@ function App() {
 
     const start = () => {
         console.log("Start");
-        //Tone.Transport.stop("+0.01"); // strange tryout kind of works
         Tone.Transport.start("+0.1"); // is this necessary
-        //Tone.Transport.scheduleRepeat(() => {
-        //    setTime(Math.floor(Tone.Transport.seconds));
-        // }, 1);
+        Tone.Transport.scheduleRepeat(() => {
+           setTime(Math.floor(Tone.Transport.seconds));
+           if (Tone.Transport.seconds>trackInfo.duration) {
+               stop();
+           }
+        }, 1);
         if (videoRef.current) videoRef.current.play();
     }
 
@@ -164,7 +167,6 @@ function App() {
     }
 
 
-//test
     Tone.loaded().then(() => {
         if (counter<2) {
             setCounter(counter+1);
@@ -193,8 +195,18 @@ function App() {
     const addRandomEvents = () => { //  , when="+0.1"?
         const currentEvents = events.slice(); // or should it be an empty array?
 
-        for (let track of tracks) {
+        let allTracks = [];
+
+        for (let group of trackInfo.trackGroups) {
+
+            allTracks.push(group.tracks);
+        }
+        allTracks = allTracks.flat();
+        console.log("all tracks:", allTracks);
+
+        for (let track of allTracks) {
             const trackName = track.name;
+            console.log("track name: ", trackName, track);
             const property = getRandomElement(["volume", "pan"]); //, "solo", "mute"]);
             let value = 0;
             const minVolume = -36;
@@ -269,10 +281,8 @@ function App() {
 
     const columnsPerGroup = (pieceIndex===0) ? 6 : (pieceIndex===1) ? 4 : 12;
 
-    // üles:
-    const selectRef = useRef();
+    // TODO: if a random element is set, it will be reset/rerendered every second beacouse of time/events, I guess...
 
-    // TODO: Backdrop should be open until !userTouched
     return (
         <ThemeProvider theme={darkTheme}>
 
@@ -332,7 +342,7 @@ function App() {
                                         <Button aria-label={"Stop"} onClick={stop}>Stop</Button>
                                     </Grid>
                                     <Grid item>
-                                        <TimeLabel />
+                                        <span>Time: {Math.floor(time/60)} : {time%60}</span>
                                     </Grid>
                                 </Grid>
 
