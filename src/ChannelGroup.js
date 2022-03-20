@@ -9,8 +9,6 @@ import ChannelControl from "./ChannelControl";
 const ChannelGroup = ({name, tracks, events, channel }) => {
 
     const [volume, setVolume] = useState(0);
-    //const [pan, setPan] = useState(0);
-    //const [channel, setChannel] = useState(null);
     const [soloed, setSoloed] = useState(false);
     const [muted, setMuted] = useState(false);
     const [trackSolos, setTrackSolos] = useState(new Array(10)); // define 10 by default
@@ -71,6 +69,27 @@ const ChannelGroup = ({name, tracks, events, channel }) => {
 
     const handleSolo = (solo) => {
         if (channel) channel.set({solo: solo });
+        // if soloed and none of the tracks are solo, make them all
+        if (solo && !trackSolos.includes(true)) {
+            console.log("Solo all subtracks");
+            for (let track of tracks) {
+                // not sure if this is good - it just deals with the Tone.Channel...
+                track.channel.solo = true;
+                //handleChildSoloChange(track.name, true)
+            }
+        }
+        // if uhnsoloed and some of the tracks are solo,unsoloe them
+
+        if (!solo) { // not good yet...
+            console.log("Unsolo all tracks")
+            for (let i=0; i<tracks.length; i++) {
+                //if (trackSolos[i] !== true) {
+                    tracks[i].channel.solo = false;
+                //}
+                //handleChildSoloChange(track.name, false)
+            }
+        }
+
         setSoloed(solo);
     }
 
