@@ -41,7 +41,7 @@ const ChannelControl = ({track, events, soloChange}) => { // props: name, source
             //console.log("Events: ", events );
 
             for (let event of events) {
-                console.log(event);
+                //console.log(event);
                 Tone.Transport.scheduleOnce( ()=> {
                     if (event.property === "volume") {
                         handleVolume(event.value, event.rampTime);
@@ -54,7 +54,7 @@ const ChannelControl = ({track, events, soloChange}) => { // props: name, source
                     }
                 }, event.when);
             }
-        }, [events, channel]
+        }, [events]
 
     );
 

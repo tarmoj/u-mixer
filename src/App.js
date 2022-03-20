@@ -61,12 +61,11 @@ function App() {
     const [events, setEvents] = useState([]);
     const [eventDialogOpen, setEventDialogOpen] = useState(false);
     const [eventText, setEventText] = useState(defaultEventText);
-    const [tracks, setTracks] = useState(null);
     const [pieceIndex, setPieceIndex] = useState(2); // index to the selected piece in tracks.json
     const [trackInfo, setTrackInfo] = useState(trackData[pieceIndex]); // array of trackinfo by groups, where channels and player are added
 
     const [time, setTime] = useState(0);
-    const [clipDuration, setClipDuration] = useState(300);
+    //const [clipDuration, setClipDuration] = useState(300);
 
     const videoRef= useRef();
     const selectRef = useRef();
@@ -122,7 +121,7 @@ function App() {
             }
         }
         setTrackInfo(newTrackInfo);
-        setClipDuration(newTrackInfo.duration);
+        //setClipDuration(newTrackInfo.duration);
         console.log("New pieces duration is: ", newTrackInfo.duration);
     }
 
@@ -158,12 +157,14 @@ function App() {
 
     const stop = () => {
         console.log("Stop");
-        Tone.Transport.stop("+0.01");
+        Tone.Transport.stop("+0.05");
         setTime(0);
         if (videoRef.current) {
             videoRef.current.pause();
             videoRef.current.currentTime = 0;
         }
+        Tone.Transport.cancel(0.1);
+        setEvents([]);
     }
 
 
@@ -172,7 +173,7 @@ function App() {
             setCounter(counter+1);
             console.log("Loaded counter: ", counter);
         } else {
-            console.log("perhaps how loaded?")
+            //console.log("perhaps how loaded?")
         }
     });
 

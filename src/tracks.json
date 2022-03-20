@@ -135,34 +135,6 @@
 				]
 			}
 		]
-	},
-
-	{
-		"title": "Test - piece",
-		"duration": 69,
-		"credits": "",
-		"trackGroups": [
-			{
-				"name": "Flute",
-				"tracks": [
-					{
-						"name": "Fl_1",
-						"soundFile": "bussotti/fl1.mp3"
-					},
-					{
-						"name": "Fl_2",
-						"soundFile": "bussotti/fl2.mp3"
-					},
-					{
-						"name": "Fl_3",
-						"soundFile": "bussotti/fl3.mp3"
-					},
-					{
-						"name": "Fl_4",
-						"soundFile": "bussotti/fl4.mp3"
-					}
-				]
-			}
-		]
 	}
+
 ]
