@@ -7,7 +7,7 @@ import {Paper, Slider, ToggleButton, Grid} from "@mui/material";
 // see example: https://github.com/Tonejs/Tone.js/blob/dev/examples/mixer.html
 
 
-const ChannelControl = ({track, events, soloChange}) => { // props: name, source,  event: {property, value, rampTime}
+const ChannelControl = ({track, events, soloChange, volumeProp}) => { // props: name, source,  event: {property, value, rampTime}, soloChange -  refrernce to function;
 
     const name = track.name;
     const channel = track.channel;
@@ -32,6 +32,11 @@ const ChannelControl = ({track, events, soloChange}) => { // props: name, source
         const buffer = track ? track.player.buffer : null;
         if (buffer) buffer.onload = () => setLoaded(true)  ;
     }, [track] );
+
+    useEffect(()=> {
+        console.log("Volume from prop:", volumeProp);
+        handleVolume(volumeProp);
+    }, [volumeProp] );
 
 
 

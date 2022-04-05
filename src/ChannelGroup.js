@@ -1,9 +1,8 @@
 import * as Tone from "tone"
 import {useState, useEffect} from "react";
-import {Grid, Paper, Slider, ToggleButton} from "@mui/material";
+import {Button, Grid, IconButton, Paper, Slider, ToggleButton} from "@mui/material";
 import ChannelControl from "./ChannelControl";
-
-
+import {VolumeOff, VolumeUp} from "@mui/icons-material";
 
 
 const ChannelGroup = ({name, tracks, events, channel }) => {
@@ -12,6 +11,7 @@ const ChannelGroup = ({name, tracks, events, channel }) => {
     const [soloed, setSoloed] = useState(false);
     const [muted, setMuted] = useState(false);
     const [trackSolos, setTrackSolos] = useState(new Array(10)); // define 10 by default
+    const [trackVolumes, setTrackVolumes] = useState(new Array(10).fill(-60) );
 
 /*
     useEffect(() => {
@@ -122,6 +122,11 @@ const ChannelGroup = ({name, tracks, events, channel }) => {
         setTrackSolos(currentSolos);
     }
 
+    const setVolumes = (dB) => {
+        const newVolumes = new Array(tracks.length).fill(dB);
+        setTrackVolumes(newVolumes);
+    }
+
     return (
         <Paper elevation={2} sx={{width: getWidth() }}>
             <Grid item container direction={"column"} rowSpacing={1} alignItems={"center"} >
@@ -137,10 +142,17 @@ const ChannelGroup = ({name, tracks, events, channel }) => {
                     <Grid item>
                         <Slider  sx={{width: 60 }}   value={volume} min={-36} max={6} onChange={(e) => handleVolume(e.target.value)} />
                     </Grid>
+                    <Grid item>Tracks' volume:</Grid>
+                    <Grid item>
+                        <IconButton onClick={ () => {setVolumes(0)}} ><VolumeUp /></IconButton>
+                    </Grid>
+                    <Grid item>
+                        <IconButton onClick={ () => {setVolumes(-90)}} ><VolumeOff /></IconButton>
+                    </Grid>
                     <Grid item container direction={"row"} spacing={1}>
                         { tracks.map( (track, index) =>
                             <Grid item key={index}>
-                                <ChannelControl track={track} events={getTrackEventList(track.name)} soloChange={handleChildSoloChange} />
+                                <ChannelControl track={track} events={getTrackEventList(track.name)} soloChange={handleChildSoloChange} volumeProp={trackVolumes[index]}/>
                             </Grid>
                         )
                         }
