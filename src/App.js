@@ -1,6 +1,6 @@
 import './App.css';
 import * as Tone from "tone"
-import {useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {
     Backdrop,
     Button,
@@ -16,7 +16,7 @@ import { createTheme } from '@mui/material/styles';
 import ChannelGroup from "./ChannelGroup";
 import * as JSON5 from "json5";
 import packageInfo from '../package.json';
-import trackData from "./tracks.json";
+//import trackData from "./tracks.json";
 
 
 const version = packageInfo.version;
@@ -62,7 +62,8 @@ function App() {
     const [eventDialogOpen, setEventDialogOpen] = useState(false);
     const [eventText, setEventText] = useState(defaultEventText);
     const [pieceIndex, setPieceIndex] = useState(2); // index to the selected piece in tracks.json
-    const [trackInfo, setTrackInfo] = useState(trackData[pieceIndex]); // array of trackinfo by groups, where channels and player are added
+    const [trackData, setTrackData] = useState(null);
+    const [trackInfo, setTrackInfo] = useState(null);//useState(trackData[pieceIndex]); // array of trackinfo by groups, where channels and player are added
 
     const [time, setTime] = useState(0);
     //const [clipDuration, setClipDuration] = useState(300);
@@ -70,7 +71,14 @@ function App() {
     const videoRef= useRef();
     const selectRef = useRef();
 
-
+    useEffect( ()=>{
+        fetch(process.env.PUBLIC_URL + "/tracks.json")
+            .then((res) => res.json())
+            .then((data) => {
+                setTrackData(data);
+                console.log("Loaded json object: ", data);
+            })
+    }, [] );
 
     const createChannel = () => {
         const channel = new Tone.Channel({ channelCount:2, volume:-90});
@@ -93,6 +101,7 @@ function App() {
 
     const prepareTrackInfo  = (index) => { // piece index in trackData (json)
 
+        if (!trackData) {console.log("No trackData"); return; }
         setCounter(0); // to activate the bacdrop loader progress
 
         if (trackInfo) {
@@ -126,6 +135,7 @@ function App() {
     }
 
     const loadResources = (event) => {
+        if (!trackData) {console.log("No trackData"); return; }
         const index = event.target.value;
         console.log("Should set  piece to: ", index, trackData[index].title);
         stop(); // for any case

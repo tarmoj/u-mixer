@@ -121,7 +121,7 @@
 	{
 		"title": "Claude Vivier -  Pulau Dewata",
 		"credits": "",
-		"duration": 68,
+		"duration": 98,
 		"trackGroups": [
 			{
 				"name": "U:",
@@ -132,6 +132,41 @@
 					{"name": "Vlc", "soundFile":"vivier/vlc.mp3"},
 					{"name": "Pf", "soundFile":"vivier/pf.mp3"},
 					{"name": "Perc", "soundFile":"vivier/perc.mp3"}
+				]
+			}
+		]
+	},
+
+	{
+		"title": "Age Veeroos -  Visand",
+		"credits": "",
+		"duration": 75,
+		"trackGroups": [
+			{
+				"name": "U:",
+				"tracks": [
+					{"name": "Fl", "soundFile":"age/flute.mp3"},
+					{"name": "Vl", "soundFile":"age/violin.mp3"},
+					{"name": "Vlc", "soundFile":"age/cello.mp3"},
+					{"name": "Perc", "soundFile":"age/perc.mp3"}
+				]
+			}
+		]
+	},
+
+	{
+		"title": "Elis Allik -  Katkend",
+		"credits": "",
+		"duration": 98,
+		"trackGroups": [
+			{
+				"name": "U:",
+				"tracks": [
+					{"name": "Fl", "soundFile":"elis/flute.mp3"},
+					{"name": "Vl", "soundFile":"elis/violin.mp3"},
+					{"name": "Vlc", "soundFile":"elis/cello.mp3"},
+					{"name": "Perc1", "soundFile":"elis/perc1.mp3"},
+					{"name": "Perc2", "soundFile":"elis/perc2.mp3"}
 				]
 			}
 		]
